@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Gravity;
@@ -11,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -18,115 +20,90 @@ import android.widget.Toast;
 
 import java.io.IOException;
 
-public class URLMediaPlayerActivity extends Activity {
+public class URLMediaPlayerActivity extends Activity implements View.OnClickListener {
 
     private MediaPlayer mediaPlayer;
     private SeekBar seekBar;
+    private ImageButton btn_backward, btn_pause, btn_play, btn_forward;
+    private TextView tv_now_playing_text;
 
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-        // remove title and go full screen
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+        // inflate layout
+        setContentView(R.layout.activity_media_player);
 
         // get data from main activity intent
-        Bundle extras = getIntent().getExtras();
-        String audioFile = extras.getString("uriStr");
-//
-//        android.net.URI auri = new android.net.URI("your url goes here");
-//        java.net.URI juri = new java.net.URI(auri.toString());
-//        final String coverImage = intent.getStringExtra(MainActivity.IMG_URL);
+        Uri audioFile = getIntent().getData();
+        String audioName = getIntent().getExtras().getString("name");
+        // setup ui
+        bindUI();
+        // setup mediaplayer
+        setUpMediaPlayer(audioFile, audioName);
+    }
 
+    private void bindUI() {
+        btn_backward = findViewById(R.id.btn_backward);
+        btn_pause = findViewById(R.id.btn_pause);
+        btn_play = findViewById(R.id.btn_play);
+        btn_forward = findViewById(R.id.btn_forward);
 
+        btn_backward.setOnClickListener(this);
+        btn_pause.setOnClickListener(this);
+        btn_play.setOnClickListener(this);
+        btn_forward.setOnClickListener(this);
+
+        tv_now_playing_text = findViewById(R.id.now_playing_text);
+
+    }
+
+    private void setUpMediaPlayer(Uri audioFile, String audioName) {
         // create a media player
         mediaPlayer = new MediaPlayer();
-
         // try to load data and play
         try {
-
             // give data to mediaPlayer
-            mediaPlayer.setDataSource(audioFile);
+            mediaPlayer.setDataSource(getApplicationContext(), audioFile);
             // media player asynchronous preparation
             mediaPlayer.prepareAsync();
-
             // create a progress dialog (waiting media player preparation)
             final ProgressDialog dialog = new ProgressDialog(URLMediaPlayerActivity.this);
-
             // set message of the dialog
             dialog.setMessage("로딩중입니다.");
-
             // prevent dialog to be canceled by back button press
             dialog.setCancelable(false);
-
             // show dialog at the bottom
             dialog.getWindow().setGravity(Gravity.CENTER);
-
             // show dialog
             dialog.show();
 
-
-            // inflate layout
-            setContentView(R.layout.activity_media_player);
-
             // display title
-            ((TextView)findViewById(R.id.now_playing_text)).setText(audioFile);
-
-
-            /// Load cover image (we use Picasso Library)
-
-            // Get image view
-            ImageView mImageView = (ImageView) findViewById(R.id.coverImage);
-
-            // Image url
-//            String image_url = coverImage;
-
-
-//            Picasso.with(getApplicationContext()).load(image_url).into(mImageView);
-
-            ///
-
-
+            tv_now_playing_text.setText(audioName);
             // execute this code at the end of asynchronous media player preparation
             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 public void onPrepared(final MediaPlayer mp) {
-
-
                     //start media player
                     mp.start();
-
                     // link seekbar to bar view
                     seekBar = (SeekBar) findViewById(R.id.seekBar);
-
                     //update seekbar
                     mRunnable.run();
-
                     //dismiss dialog
                     dialog.dismiss();
                 }
             });
-
-
         } catch (IOException e) {
             Activity a = this;
             a.finish();
             Toast.makeText(this, "파일을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
         }
-
-
     }
-
 
     private Handler mHandler = new Handler();
     private Runnable mRunnable = new Runnable() {
-
         @Override
         public void run() {
-            if(mediaPlayer != null) {
+            if (mediaPlayer != null) {
 
                 //set max value
                 int mDuration = mediaPlayer.getDuration();
@@ -159,93 +136,52 @@ public class URLMediaPlayerActivity extends Activity {
 
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        if(mediaPlayer != null && fromUser){
+                        if (mediaPlayer != null && fromUser) {
                             mediaPlayer.seekTo(progress);
                         }
                     }
                 });
-
-
             }
-
             //repeat above code every second
             mHandler.postDelayed(this, 10);
         }
     };
-
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
-
-    public void play(View view){
-
-        mediaPlayer.start();
-    }
-
-
-    public void pause(View view){
-
-        mediaPlayer.pause();
-
-    }
-
-    public void stop(View view){
-
+    public void stop(View view) {
         mediaPlayer.seekTo(0);
         mediaPlayer.pause();
 
     }
-
-
-    public void seekForward(View view){
-
+    public void seekForward() {
         //set seek time
         int seekForwardTime = 5000;
-
         // get current song position
         int currentPosition = mediaPlayer.getCurrentPosition();
         // check if seekForward time is lesser than song duration
-        if(currentPosition + seekForwardTime <= mediaPlayer.getDuration()){
+        if (currentPosition + seekForwardTime <= mediaPlayer.getDuration()) {
             // forward song
             mediaPlayer.seekTo(currentPosition + seekForwardTime);
-        }else{
+        } else {
             // forward to end position
             mediaPlayer.seekTo(mediaPlayer.getDuration());
         }
-
     }
-
-    public void seekBackward(View view){
-
+    public void seekBackward() {
         //set seek time
         int seekBackwardTime = 5000;
-
         // get current song position
         int currentPosition = mediaPlayer.getCurrentPosition();
         // check if seekBackward time is greater than 0 sec
-        if(currentPosition - seekBackwardTime >= 0){
+        if (currentPosition - seekBackwardTime >= 0) {
             // forward song
             mediaPlayer.seekTo(currentPosition - seekBackwardTime);
-        }else{
+        } else {
             // backward to starting position
             mediaPlayer.seekTo(0);
         }
-
     }
 
 
-
-
-    public void onBackPressed(){
+    public void onBackPressed() {
         super.onBackPressed();
 
         if (mediaPlayer != null) {
@@ -259,9 +195,9 @@ public class URLMediaPlayerActivity extends Activity {
     private String getTimeString(long millis) {
         StringBuffer buf = new StringBuffer();
 
-        long hours = millis / (1000*60*60);
-        long minutes = ( millis % (1000*60*60) ) / (1000*60);
-        long seconds = ( ( millis % (1000*60*60) ) % (1000*60) ) / 1000;
+        long hours = millis / (1000 * 60 * 60);
+        long minutes = (millis % (1000 * 60 * 60)) / (1000 * 60);
+        long seconds = ((millis % (1000 * 60 * 60)) % (1000 * 60)) / 1000;
 
         buf
                 .append(String.format("%02d", hours))
@@ -271,5 +207,26 @@ public class URLMediaPlayerActivity extends Activity {
                 .append(String.format("%02d", seconds));
 
         return buf.toString();
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_play:
+                mediaPlayer.start();
+                break;
+            case R.id.btn_pause:
+                mediaPlayer.pause();
+                break;
+            case R.id.btn_forward:
+                seekForward();
+                break;
+            case R.id.btn_backward:
+                seekBackward();
+                break;
+            default:
+                break;
+        }
     }
 }
