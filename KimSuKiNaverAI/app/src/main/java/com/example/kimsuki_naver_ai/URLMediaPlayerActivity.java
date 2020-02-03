@@ -76,7 +76,6 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
             dialog.getWindow().setGravity(Gravity.CENTER);
             // show dialog
             dialog.show();
-
             // display title
             tv_now_playing_text.setText(audioName);
             // execute this code at the end of asynchronous media player preparation
@@ -149,7 +148,6 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
     public void stop(View view) {
         mediaPlayer.seekTo(0);
         mediaPlayer.pause();
-
     }
     public void seekForward() {
         //set seek time
