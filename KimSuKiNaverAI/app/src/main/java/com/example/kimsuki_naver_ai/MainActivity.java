@@ -4,6 +4,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -15,6 +16,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.runtime.Permission;
 
 import java.net.URL;
 
@@ -28,8 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         bindUI();
-//        requestRecordAudioPermission();
-
+        requestPermission();
     }
 
     private void bindUI() {
@@ -81,30 +84,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return result;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestPermission(){
+        AndPermission.with(this)
+                .runtime()
+                .permission(Permission.READ_EXTERNAL_STORAGE)
+                .onGranted(permissions -> {
+                    // Storage permission are allowed.
+                })
+                .onDenied(permissions -> {
+                    // Storage permission are not allowed.
+                })
+                .start();
 
-    private void requestRecordAudioPermission() {
-        String requiredPermission = Manifest.permission.RECORD_AUDIO;
+        AndPermission.with(this)
+                .runtime()
+                .permission(Permission.WRITE_EXTERNAL_STORAGE)
+                .onGranted(permissions -> {
+                    // Storage permission are allowed.
+                })
+                .onDenied(permissions -> {
+                    // Storage permission are not allowed.
+                })
+                .start();
 
-        // If the user previously denied this permission then show a message explaining why
-        // this permission is needed
-        if (this.checkCallingOrSelfPermission(requiredPermission) == PackageManager.PERMISSION_GRANTED) {
-
-        } else {
-            Toast.makeText(this, "This app needs to record audio through the microphone....", Toast.LENGTH_SHORT).show();
-            requestPermissions(new String[]{requiredPermission}, 101);
-        }
-
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        if (requestCode == 101 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            // This method is called when the  permissions are given
-        }
-
+        AndPermission.with(this)
+                .runtime()
+                .permission(Permission.READ_PHONE_STATE)
+                .onGranted(permissions -> {
+                    // Storage permission are allowed.
+                })
+                .onDenied(permissions -> {
+                    // Storage permission are not allowed.
+                })
+                .start();
     }
 
     @Override
