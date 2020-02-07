@@ -21,7 +21,7 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button btn_finder;
+    Button btn_finder, button1, button2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,25 +30,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bindUI();
 //        requestRecordAudioPermission();
     }
+
     private void bindUI() {
         btn_finder = findViewById(R.id.btn_finder);
+        button1 = findViewById(R.id.button1);
+        button2 = findViewById(R.id.button2);
+
         btn_finder.setOnClickListener(this);
+        button1.setOnClickListener(this);
+        button2.setOnClickListener(this);
     }
+
     //FUNCTIONS
-    private void getAudioFile(){
+    private void getAudioFile() {
         Intent intent_upload = new Intent();
         intent_upload.setType("audio/*");
         intent_upload.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent_upload,1);
+        startActivityForResult(intent_upload, 1);
     }
-    private void playAudioFile(Uri uri, String AudioName){
+
+    private void playAudioFile(Uri uri, String AudioName) {
         /** open player  */
         Intent intent = new Intent(this, URLMediaPlayerActivity.class);
         intent.setData(uri);
-        intent.putExtra("name",AudioName);
+        intent.putExtra("name", AudioName);
         startActivity(intent);
 
     }
+
     private String getFileName(Uri uri) {
         String result = null;
         if (uri.getScheme().equals("content")) {
@@ -70,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         return result;
     }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
 
     private void requestRecordAudioPermission() {
@@ -95,27 +105,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
     }
+
     @Override
-    protected void onActivityResult(int requestCode,int resultCode,Intent data){
-        if(requestCode == 1){
-            if(resultCode == RESULT_OK){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
                 //the selected audio.
                 Uri AudioUri = data.getData();
                 String fileName = getFileName(AudioUri);
 
                 Log.e("audio file name : ", fileName);
-                playAudioFile(AudioUri,fileName);
+                playAudioFile(AudioUri, fileName);
 
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_finder:
                 getAudioFile();
                 break;
+            case R.id.button1:
+                Log.d("test", "액티비티-서비스 시작버튼클릭");
+                Intent intent1 = new Intent(
+                        getApplicationContext(),//현재제어권자
+                        MyService.class); // 이동할 컴포넌트
+                startService(intent1); // 서비스 시작
+                break;
+            case R.id.button2:
+                // 서비스 종료하기
+                Log.d("test", "액티비티-서비스 종료버튼클릭");
+                Intent intent2 = new Intent(
+                        getApplicationContext(),//현재제어권자
+                        MyService.class); // 이동할 컴포넌트
+                stopService(intent2); // 서비스 종료
+
+                break;
+
             default:
 
                 break;
