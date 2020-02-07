@@ -11,6 +11,9 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public class MyReceiver extends BroadcastReceiver {
 
     private final static String TAG = "free_call";
@@ -55,12 +58,14 @@ public class MyReceiver extends BroadcastReceiver {
                 }
                 if (this.incomingFlag) {
                     // TODO 전화가 왔고, 통화를 시작했을때 그에 맞는 프로세스를 실행한다.
+
                     Toast.makeText(context, "전화가 와서 받았음 " + phoneNumber, Toast.LENGTH_SHORT).show();
                     // 서비스 시작하기
                     Log.d("test", "리시버-서비스 시작버튼클릭");
                     Intent intent2 = new Intent(
                             context,//현재제어권자
                             MyService.class); // 이동할 컴포넌트
+                    intent2.putExtra("number",phoneNumber);
                     context.startService(intent2); // 서비스 시작
                 } else {
                     // TODO 전화를 했을때 그에 맞는 프로세스를 실행한다.

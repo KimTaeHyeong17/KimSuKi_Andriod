@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void requestPermission(){
+
         AndPermission.with(this)
                 .runtime()
                 .permission(Permission.READ_EXTERNAL_STORAGE)
@@ -110,6 +111,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         AndPermission.with(this)
                 .runtime()
                 .permission(Permission.READ_PHONE_STATE)
+                .onGranted(permissions -> {
+                    // Storage permission are allowed.
+                })
+                .onDenied(permissions -> {
+                    // Storage permission are not allowed.
+                })
+                .start();
+
+        AndPermission.with(this)
+                .runtime()
+                .permission(Permission.RECORD_AUDIO)
                 .onGranted(permissions -> {
                     // Storage permission are allowed.
                 })
