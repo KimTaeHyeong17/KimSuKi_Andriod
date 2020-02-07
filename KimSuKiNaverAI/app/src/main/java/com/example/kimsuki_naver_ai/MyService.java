@@ -39,7 +39,6 @@ public class MyService extends Service {
         T.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-
                 Log.e("service counter start: ", String.valueOf(count));
                 count++;
             }

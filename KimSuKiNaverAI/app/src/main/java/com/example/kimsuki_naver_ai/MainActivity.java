@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         bindUI();
 //        requestRecordAudioPermission();
+
     }
 
     private void bindUI() {
