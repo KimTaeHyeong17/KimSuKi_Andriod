@@ -15,17 +15,22 @@ import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.runtime.Permission;
 
 import java.net.URL;
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button btn_finder, button1, button2;
+    ListView listview;
+    private ArrayList<Data> arrayList = new ArrayList<>();
+    private Adapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +44,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_finder = findViewById(R.id.btn_finder);
         button1 = findViewById(R.id.button1);
         button2 = findViewById(R.id.button2);
+        listview = findViewById(R.id.listview);
 
         btn_finder.setOnClickListener(this);
         button1.setOnClickListener(this);
         button2.setOnClickListener(this);
+
+        adapter = new Adapter(this, arrayList);
+        listview.setAdapter(adapter);
+
+        loadFiles();
+
     }
 
     //FUNCTIONS
@@ -83,7 +95,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return result;
     }
 
-    private void requestPermission(){
+    private void loadFiles() {
+
+
+
+        adapter.notifyDataSetChanged();
+    }
+
+    private void requestPermission() {
 
         AndPermission.with(this)
                 .runtime()
@@ -157,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent1 = new Intent(
                         getApplicationContext(),//현재제어권자
                         MyService.class); // 이동할 컴포넌트
+                intent1.putExtra("number", "fromButton");
                 startService(intent1); // 서비스 시작
                 break;
             case R.id.button2:
@@ -165,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent2 = new Intent(
                         getApplicationContext(),//현재제어권자
                         MyService.class); // 이동할 컴포넌트
+                intent2.putExtra("number", "fromButton");
                 stopService(intent2); // 서비스 종료
 
                 break;
