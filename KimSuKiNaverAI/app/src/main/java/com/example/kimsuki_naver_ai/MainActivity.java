@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         intent.setData(uri);
         intent.putExtra("name", AudioName);
         startActivity(intent);
-
     }
 
     private String getFileName(Uri uri) {

@@ -102,7 +102,7 @@ public class Useful {
         }
     }
 
-    private static String getPath(Context context, Uri uri) {
+    public static String getPath(Context context, Uri uri) {
         String result = null;
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);

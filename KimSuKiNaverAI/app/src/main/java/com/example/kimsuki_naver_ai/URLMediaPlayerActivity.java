@@ -7,18 +7,29 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+
+import cz.msebera.android.httpclient.Header;
 
 public class URLMediaPlayerActivity extends Activity implements View.OnClickListener {
 
@@ -26,6 +37,8 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
     private SeekBar seekBar;
     private ImageButton btn_backward, btn_pause, btn_play, btn_forward;
     private TextView tv_now_playing_text;
+    private Button btn_upload;
+    private Uri uri;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -35,6 +48,7 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
 
         // get data from main activity intent
         Uri audioFile = getIntent().getData();
+        uri = audioFile;
         String audioName = getIntent().getExtras().getString("name");
         // setup ui
         bindUI();
@@ -47,12 +61,14 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
         btn_pause = findViewById(R.id.btn_pause);
         btn_play = findViewById(R.id.btn_play);
         btn_forward = findViewById(R.id.btn_forward);
+        btn_upload = findViewById(R.id.btn_upload);
 
         btn_backward.setOnClickListener(this);
         btn_pause.setOnClickListener(this);
         btn_play.setOnClickListener(this);
         btn_forward.setOnClickListener(this);
 
+        btn_upload.setOnClickListener(this);
         tv_now_playing_text = findViewById(R.id.now_playing_text);
 
     }
@@ -145,10 +161,12 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
             mHandler.postDelayed(this, 10);
         }
     };
+
     public void stop(View view) {
         mediaPlayer.seekTo(0);
         mediaPlayer.pause();
     }
+
     public void seekForward() {
         //set seek time
         int seekForwardTime = 5000;
@@ -163,6 +181,7 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
             mediaPlayer.seekTo(mediaPlayer.getDuration());
         }
     }
+
     public void seekBackward() {
         //set seek time
         int seekBackwardTime = 5000;
@@ -207,6 +226,42 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
         return buf.toString();
     }
 
+    private void uploadFile() {
+        File file = new File(Useful.getPath(this,uri));
+        RequestParams params = new RequestParams();
+        try {
+            params.put("logo_img", file);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        Network.post(this, "/setting/taky_ad/add_logo_image", params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+                    if (response.getString("code").equals("S01")) {
+                        Toast.makeText(getApplicationContext(), response.getString("code"), Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        String message = response.getString("message");
+                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.d("Failed: ", "" + statusCode);
+                Log.d("Error : ", "" + throwable);
+            }
+        });//network
+
+
+    }
 
     @Override
     public void onClick(View v) {
@@ -222,6 +277,9 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
                 break;
             case R.id.btn_backward:
                 seekBackward();
+                break;
+            case R.id.btn_upload:
+                uploadFile();
                 break;
             default:
                 break;
