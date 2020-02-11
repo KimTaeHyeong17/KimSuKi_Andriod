@@ -33,6 +33,7 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:2.2.2"
     implementation 'com.yanzhenjie:permission:2.0.3'
 
+    implementation 'com.loopj.android:android-async-http:1.4.9'
 
 
 }

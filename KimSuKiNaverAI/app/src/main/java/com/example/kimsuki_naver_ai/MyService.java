@@ -104,6 +104,31 @@ public class MyService extends Service {
         }
     }
 
+    private void startUpLinkRecording() {
+        mRecorder = new MediaRecorder();
+        mRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_UPLINK);
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.HE_AAC);
+            mRecorder.setAudioEncodingBitRate(48000);
+        } else {
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+            mRecorder.setAudioEncodingBitRate(64000);
+        }
+        mRecorder.setAudioSamplingRate(16000);
+        mOutputFile = getOutputFile();
+        mOutputFile.getParentFile().mkdirs();
+        mRecorder.setOutputFile(mOutputFile.getAbsolutePath());
+        try {
+            mRecorder.prepare();
+            mRecorder.start();
+            mStartTime = SystemClock.elapsedRealtime();
+            Log.d("Voice Recorder","started recording to "+mOutputFile.getAbsolutePath());
+        } catch (IOException e) {
+            Log.e("Voice Recorder", "prepare() failed "+e.getMessage());
+        }
+    }
+
     protected  void stopRecording(boolean saveFile) {
         mRecorder.stop();
         mRecorder.release();
@@ -116,7 +141,7 @@ public class MyService extends Service {
     private File getOutputFile() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmssSSS", Locale.KOREA);
         return new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                + "/Voice Recorder/RECORDING_"
+                + "/Voice Recorder/"
                 + phoneNumber
                 + dateFormat.format(new Date())
                 + ".m4a");
