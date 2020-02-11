@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     Button btn_finder, button1, button2;
     ListView listview;
-    private ArrayList<Data> arrayList = new ArrayList<>();
+    private ArrayList<String> nameArrayList = new ArrayList<>();
     private Adapter adapter;
 
     @Override
@@ -50,10 +50,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         button1.setOnClickListener(this);
         button2.setOnClickListener(this);
 
-        adapter = new Adapter(this, arrayList);
+        adapter = new Adapter(this, nameArrayList);
         listview.setAdapter(adapter);
 
-        loadFiles();
 
     }
 
@@ -95,12 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return result;
     }
 
-    private void loadFiles() {
 
-
-
-        adapter.notifyDataSetChanged();
-    }
 
     private void requestPermission() {
 
@@ -158,7 +152,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String fileName = getFileName(AudioUri);
 
                 Log.e("audio file name : ", fileName);
-                playAudioFile(AudioUri, fileName);
+                nameArrayList.add(fileName);
+                adapter.notifyDataSetChanged();
+//                playAudioFile(AudioUri, fileName);
 
             }
         }

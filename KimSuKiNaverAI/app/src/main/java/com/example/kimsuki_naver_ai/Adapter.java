@@ -12,12 +12,12 @@ import java.util.ArrayList;
 
 public class Adapter extends BaseAdapter {
 
-    private ArrayList<Data> arrayList = new ArrayList<>();
+    private ArrayList<String> arrayList = new ArrayList<>();
     private Activity activity;
     private LayoutInflater myInflater;
     private int type;
 
-    public Adapter(Activity act, ArrayList<Data> arrayList) {
+    public Adapter(Activity act, ArrayList<String> arrayList) {
         this.arrayList = arrayList;
         this.activity = act;
         myInflater  = (LayoutInflater) act.getSystemService( Context.LAYOUT_INFLATER_SERVICE);
@@ -45,11 +45,9 @@ public class Adapter extends BaseAdapter {
             v = (ViewHolder) convertView.getTag();
         }
 
-        Data item = arrayList.get(position);
+        String item = arrayList.get(position);
 
-        v.tv_name.setText(item.getName());
-        v.tv_date.setText(item.getDate());
-        v.tv_tag.setText(item.getTag());
+        v.tv_name.setText(item);
 
 
 
@@ -72,12 +70,12 @@ public class Adapter extends BaseAdapter {
         arrayList.clear();
     }
 
-    public void filterList(ArrayList<Data> filteredList) {
+    public void filterList(ArrayList<String> filteredList) {
         arrayList = filteredList;
         notifyDataSetChanged();
     }
 
-    public ArrayList<Data> getFilteredArray(){
+    public ArrayList<String> getFilteredArray(){
         return arrayList;
     }
     public static class ViewHolder
