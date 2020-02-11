@@ -1,7 +1,8 @@
-package com.example.kimsuki_naver_ai;
+package com.example.kimsuki_naver_ai.Network;
 
 import android.app.Activity;
 
+import com.example.kimsuki_naver_ai.Useful;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -9,7 +10,7 @@ import com.loopj.android.http.RequestParams;
 import java.util.Locale;
 
 public class Network {
-    public static String BASE_URL;
+    public static String BASE_URL = "49.50.164.31";
     public static String DEV_URL = "http://106.10.36.21";
 
     private static AsyncHttpClient client = new AsyncHttpClient();
@@ -32,6 +33,7 @@ public class Network {
             params.put("country_code", countryCode);
             params.put("order_device", "pos");
         }
+//        client.setURLEncodingEnabled(false);
         client.post(BASE_URL + url, params, responseHandler);
     }
     public static void post_direct(Activity act, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {

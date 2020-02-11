@@ -1,35 +1,45 @@
-package com.example.kimsuki_naver_ai;
+package com.example.kimsuki_naver_ai.Activity;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.kimsuki_naver_ai.Adapter.Adapter;
+import com.example.kimsuki_naver_ai.Model.AudioModel;
+import com.example.kimsuki_naver_ai.Network.Network;
+import com.example.kimsuki_naver_ai.R;
+import com.example.kimsuki_naver_ai.Service.MyService;
+import com.example.kimsuki_naver_ai.Useful;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.runtime.Permission;
 
-import java.net.URL;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+
+import cz.msebera.android.httpclient.Header;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button btn_finder, button1, button2;
     ListView listview;
-    private ArrayList<String> nameArrayList = new ArrayList<>();
+    private ArrayList<AudioModel> audioModelArrayList = new ArrayList<>();
     private Adapter adapter;
 
     @Override
@@ -50,9 +60,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         button1.setOnClickListener(this);
         button2.setOnClickListener(this);
 
-        adapter = new Adapter(this, nameArrayList);
+        adapter = new Adapter(this, audioModelArrayList);
         listview.setAdapter(adapter);
-
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AudioModel data = audioModelArrayList.get(position);
+                uploadFile(data.getUri());
+//                playAudioFile(data.getUri(), data.getName());
+            }
+        });
 
     }
 
@@ -94,6 +111,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return result;
     }
 
+    private void uploadFile(Uri uri) {
+        
+        File file = new File(uri.getPath());
+        RequestParams params = new RequestParams();
+        try {
+            params.put("voicefile", file);
+            params.put("phone", "test010");
+            params.put("createdAt", "test");
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+
+        }
+        Network.post(this, "/voices", params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+                    Toast.makeText(getApplicationContext(), response.getString("id"), Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.d("Failed: ", "" + statusCode);
+                Log.d("Error : ", "" + throwable);
+            }
+        });//network
+
+
+    }
 
 
     private void requestPermission() {
@@ -152,9 +202,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String fileName = getFileName(AudioUri);
 
                 Log.e("audio file name : ", fileName);
-                nameArrayList.add(fileName);
+                AudioModel audioModel = new AudioModel();
+                audioModel.setDate("aeoifj");
+                audioModel.setName(fileName);
+                audioModel.setUri(AudioUri);
+                audioModelArrayList.add(audioModel);
                 adapter.notifyDataSetChanged();
-//                playAudioFile(AudioUri, fileName);
 
             }
         }

@@ -1,4 +1,4 @@
-package com.example.kimsuki_naver_ai;
+package com.example.kimsuki_naver_ai.Adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,16 +8,19 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.example.kimsuki_naver_ai.Model.AudioModel;
+import com.example.kimsuki_naver_ai.R;
+
 import java.util.ArrayList;
 
 public class Adapter extends BaseAdapter {
 
-    private ArrayList<String> arrayList = new ArrayList<>();
+    private ArrayList<AudioModel> arrayList = new ArrayList<>();
     private Activity activity;
     private LayoutInflater myInflater;
     private int type;
 
-    public Adapter(Activity act, ArrayList<String> arrayList) {
+    public Adapter(Activity act, ArrayList<AudioModel> arrayList) {
         this.arrayList = arrayList;
         this.activity = act;
         myInflater  = (LayoutInflater) act.getSystemService( Context.LAYOUT_INFLATER_SERVICE);
@@ -45,8 +48,7 @@ public class Adapter extends BaseAdapter {
             v = (ViewHolder) convertView.getTag();
         }
 
-        String item = arrayList.get(position);
-
+        String item = arrayList.get(position).getName();
         v.tv_name.setText(item);
 
 
@@ -70,12 +72,12 @@ public class Adapter extends BaseAdapter {
         arrayList.clear();
     }
 
-    public void filterList(ArrayList<String> filteredList) {
+    public void filterList(ArrayList<AudioModel> filteredList) {
         arrayList = filteredList;
         notifyDataSetChanged();
     }
 
-    public ArrayList<String> getFilteredArray(){
+    public ArrayList<AudioModel> getFilteredArray(){
         return arrayList;
     }
     public static class ViewHolder
