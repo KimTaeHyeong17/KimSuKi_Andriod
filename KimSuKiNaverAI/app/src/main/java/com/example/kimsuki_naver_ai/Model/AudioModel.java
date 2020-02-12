@@ -3,13 +3,13 @@ package com.example.kimsuki_naver_ai.Model;
 import android.net.Uri;
 
 public class AudioModel {
-    private int id;
-    private String createdAt;
-    private String phoneNumber;
+    private int id; //id
+    private String createdAt; //date
+    private String phoneNumber; //number
     private String[] tags;
-    private Uri uri;
+    private Uri uri; //for play media
     private String date;
-    private String path;
+    private String path; //for upload
 
     public int getId() {
         return id;

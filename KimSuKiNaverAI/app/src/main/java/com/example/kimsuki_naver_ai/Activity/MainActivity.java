@@ -2,6 +2,9 @@ package com.example.kimsuki_naver_ai.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -20,6 +23,7 @@ import com.example.kimsuki_naver_ai.Model.AudioModel;
 import com.example.kimsuki_naver_ai.Network.Network;
 import com.example.kimsuki_naver_ai.R;
 import com.example.kimsuki_naver_ai.Service.MyService;
+import com.example.kimsuki_naver_ai.Useful;
 import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -72,13 +76,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 AudioModel data = audioModelArrayList.get(position);
-                uploadFile(data.getPath());
-//                playAudioFile(data.getUri(), data.getName());
+                if (data.getUri() == null){
+                    Toast.makeText(getApplicationContext(),"uri가 널인깝숑",Toast.LENGTH_SHORT).show();
+                }else{
+                    playAudioFile(data.getUri(), String.valueOf(data.getId()));
+                }
             }
         });
+        listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("삭제하기");
+                builder.setMessage(audioModelArrayList.get(position).getId()+"롱클릭");
+                builder.setCancelable(true);
+                builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
+
+                    }
+                });
+                builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+
+
+                return true;
+            }
+        });
     }
-
     //FUNCTIONS
     private void requestPermission() {
 
@@ -126,14 +158,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 })
                 .start();
     }
-
     private void getAudioFile() {
         Intent intent_upload = new Intent();
         intent_upload.setType("audio/*");
         intent_upload.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent_upload, 1);
     }
-
     private void playAudioFile(Uri uri, String AudioName) {
         /** open player  */
         Intent intent = new Intent(this, URLMediaPlayerActivity.class);
@@ -141,7 +171,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         intent.putExtra("name", AudioName);
         startActivity(intent);
     }
-
     private String getFileName(Uri uri) {
         String result = null;
         if (uri.getScheme().equals("content")) {
@@ -165,10 +194,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //NETWORK
-    private void uploadFile(String path) {
+    private void uploadFile(AudioModel model) {
         RequestParams params = new RequestParams();
-
-        File file = new File(path);
+        File file = new File(model.getPath());
 
         try {
             params.put("voicefile", file);
@@ -186,7 +214,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 try {
+                    Toast.makeText(getApplicationContext(),"파일 업로드가 완료되었습니다",Toast.LENGTH_SHORT).show();
                     Log.e("success response", response.toString());
+                    getVoiceList();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -199,7 +229,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });//network
     }
-
     private void getVoiceList() {
         RequestParams params = new RequestParams();
         params.put("limit", "10");
@@ -234,6 +263,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });//network
     }
+    
 
 
     @Override
@@ -254,15 +284,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.e("audio file uri : ", AudioUri.getPath());
                 Log.e("new path", FileChooser.getPath(this, uri));
 
-
                 AudioModel audioModel = new AudioModel();
                 audioModel.setDate("test date");
                 audioModel.setPhoneNumber(fileName);
-                audioModel.setUri(AudioUri);
-                audioModel.setPath(FileChooser.getPath(this, uri));
+                audioModel.setUri(AudioUri); //for play media
+                audioModel.setPath(FileChooser.getPath(this, uri)); //for upload
 
-                audioModelArrayList.add(audioModel);
-                adapter.notifyDataSetChanged();
+                uploadFile(audioModel);
 
             }
         }
@@ -291,9 +319,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         MyService.class); // 이동할 컴포넌트
                 intent2.putExtra("number", "fromButton");
                 stopService(intent2); // 서비스 종료
-
                 break;
-
             default:
 
                 break;

@@ -34,7 +34,6 @@ public class Adapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
         ViewHolder v;
         if (convertView == null) {
             convertView = myInflater.inflate(R.layout.listview_item, null);
@@ -50,8 +49,6 @@ public class Adapter extends BaseAdapter {
 
         String item = arrayList.get(position).getCreatedAt();
         v.tv_name.setText(item);
-
-
 
         return convertView;
     }
