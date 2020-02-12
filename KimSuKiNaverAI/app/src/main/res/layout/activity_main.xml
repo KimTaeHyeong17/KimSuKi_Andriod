@@ -61,7 +61,10 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="150dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="5dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp"
                     android:background="#208020"
                     app:cardBackgroundColor="#f3f3f3"
                     app:cardElevation="10dp">
@@ -139,21 +142,17 @@
             android:text="파일찾기" />
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/btn_recordStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="녹음시작" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/btn_recordStop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="녹음종료" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="버튼1" />
 
     </LinearLayout>
 

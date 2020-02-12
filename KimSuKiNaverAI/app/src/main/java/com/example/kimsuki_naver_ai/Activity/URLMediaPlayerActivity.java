@@ -37,81 +37,6 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
     private TextView tv_now_playing_text;
     private Button btn_upload;
     private Uri uri;
-
-
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // inflate layout
-        setContentView(R.layout.activity_media_player);
-
-        // get data from main activity intent
-        Uri audioFile = getIntent().getData();
-        uri = audioFile;
-        String audioName = getIntent().getExtras().getString("name");
-        // setup ui
-        bindUI();
-        // setup mediaplayer
-        setUpMediaPlayer(audioFile, audioName);
-    }
-
-    private void bindUI() {
-        btn_backward = findViewById(R.id.btn_backward);
-        btn_pause = findViewById(R.id.btn_pause);
-        btn_play = findViewById(R.id.btn_play);
-        btn_forward = findViewById(R.id.btn_forward);
-        btn_upload = findViewById(R.id.btn_upload);
-
-        btn_backward.setOnClickListener(this);
-        btn_pause.setOnClickListener(this);
-        btn_play.setOnClickListener(this);
-        btn_forward.setOnClickListener(this);
-
-        btn_upload.setOnClickListener(this);
-        tv_now_playing_text = findViewById(R.id.now_playing_text);
-
-    }
-
-    private void setUpMediaPlayer(Uri audioFile, String audioName) {
-        // create a media player
-        mediaPlayer = new MediaPlayer();
-        // try to load data and play
-        try {
-            // give data to mediaPlayer
-            mediaPlayer.setDataSource(getApplicationContext(), audioFile);
-            // media player asynchronous preparation
-            mediaPlayer.prepareAsync();
-            // create a progress dialog (waiting media player preparation)
-            final ProgressDialog dialog = new ProgressDialog(URLMediaPlayerActivity.this);
-            // set message of the dialog
-            dialog.setMessage("로딩중입니다.");
-            // prevent dialog to be canceled by back button press
-            dialog.setCancelable(false);
-            // show dialog at the bottom
-            dialog.getWindow().setGravity(Gravity.CENTER);
-            // show dialog
-            dialog.show();
-            // display title
-            tv_now_playing_text.setText(audioName);
-            // execute this code at the end of asynchronous media player preparation
-            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                public void onPrepared(final MediaPlayer mp) {
-                    //start media player
-                    mp.start();
-                    // link seekbar to bar view
-                    seekBar = (SeekBar) findViewById(R.id.seekBar);
-                    //update seekbar
-                    mRunnable.run();
-                    //dismiss dialog
-                    dialog.dismiss();
-                }
-            });
-        } catch (IOException e) {
-            Activity a = this;
-            a.finish();
-            Toast.makeText(this, "파일을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private Handler mHandler = new Handler();
     private Runnable mRunnable = new Runnable() {
         @Override
@@ -160,11 +85,82 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
         }
     };
 
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // inflate layout
+        setContentView(R.layout.activity_media_player);
+
+        // get data from main activity intent
+        Uri audioFile = getIntent().getData();
+        uri = audioFile;
+        String audioName = getIntent().getExtras().getString("name");
+        // setup ui
+        bindUI();
+        // setup mediaplayer
+        setUpMediaPlayer(audioFile, audioName);
+    }
+    //UI
+    private void bindUI() {
+        btn_backward = findViewById(R.id.btn_backward);
+        btn_pause = findViewById(R.id.btn_pause);
+        btn_play = findViewById(R.id.btn_play);
+        btn_forward = findViewById(R.id.btn_forward);
+        btn_upload = findViewById(R.id.btn_upload);
+
+        btn_backward.setOnClickListener(this);
+        btn_pause.setOnClickListener(this);
+        btn_play.setOnClickListener(this);
+        btn_forward.setOnClickListener(this);
+
+        btn_upload.setOnClickListener(this);
+        tv_now_playing_text = findViewById(R.id.now_playing_text);
+
+    }
+    //FUNCTIONS
+    private void setUpMediaPlayer(Uri audioFile, String audioName) {
+        // create a media player
+        mediaPlayer = new MediaPlayer();
+        // try to load data and play
+        try {
+            // give data to mediaPlayer
+            mediaPlayer.setDataSource(getApplicationContext(), audioFile);
+            // media player asynchronous preparation
+            mediaPlayer.prepareAsync();
+            // create a progress dialog (waiting media player preparation)
+            final ProgressDialog dialog = new ProgressDialog(URLMediaPlayerActivity.this);
+            // set message of the dialog
+            dialog.setMessage("로딩중입니다.");
+            // prevent dialog to be canceled by back button press
+            dialog.setCancelable(false);
+            // show dialog at the bottom
+            dialog.getWindow().setGravity(Gravity.CENTER);
+            // show dialog
+            dialog.show();
+            // display title
+            tv_now_playing_text.setText(audioName);
+            // execute this code at the end of asynchronous media player preparation
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                public void onPrepared(final MediaPlayer mp) {
+                    //start media player
+                    mp.start();
+                    // link seekbar to bar view
+                    seekBar = (SeekBar) findViewById(R.id.seekBar);
+                    //update seekbar
+                    mRunnable.run();
+                    //dismiss dialog
+                    dialog.dismiss();
+                }
+            });
+        } catch (IOException e) {
+            Activity a = this;
+            a.finish();
+            Toast.makeText(this, "파일을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
     public void stop(View view) {
         mediaPlayer.seekTo(0);
         mediaPlayer.pause();
     }
-
     public void seekForward() {
         //set seek time
         int seekForwardTime = 5000;
@@ -179,7 +175,6 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
             mediaPlayer.seekTo(mediaPlayer.getDuration());
         }
     }
-
     public void seekBackward() {
         //set seek time
         int seekBackwardTime = 5000;
@@ -194,8 +189,6 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
             mediaPlayer.seekTo(0);
         }
     }
-
-
     public void onBackPressed() {
         super.onBackPressed();
 
@@ -206,7 +199,6 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
         }
         finish();
     }
-
     private String getTimeString(long millis) {
         StringBuffer buf = new StringBuffer();
 
@@ -223,7 +215,6 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
 
         return buf.toString();
     }
-
 
     @Override
     public void onClick(View v) {

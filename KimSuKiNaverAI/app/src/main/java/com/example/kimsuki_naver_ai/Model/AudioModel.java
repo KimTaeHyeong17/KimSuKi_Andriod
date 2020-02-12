@@ -6,6 +6,15 @@ public class AudioModel {
     private String name;
     private Uri uri;
     private String date;
+    private String path;
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 
     public String getName() {
         return name;

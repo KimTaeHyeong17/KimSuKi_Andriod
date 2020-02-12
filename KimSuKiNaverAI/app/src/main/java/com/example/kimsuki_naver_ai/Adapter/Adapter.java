@@ -67,11 +67,6 @@ public class Adapter extends BaseAdapter {
 
     }
 
-
-    public void clearItem() {
-        arrayList.clear();
-    }
-
     public void filterList(ArrayList<AudioModel> filteredList) {
         arrayList = filteredList;
         notifyDataSetChanged();
