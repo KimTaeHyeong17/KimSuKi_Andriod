@@ -48,7 +48,7 @@ public class Adapter extends BaseAdapter {
             v = (ViewHolder) convertView.getTag();
         }
 
-        String item = arrayList.get(position).getName();
+        String item = arrayList.get(position).getCreatedAt();
         v.tv_name.setText(item);
 
 

@@ -12,15 +12,22 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.kimsuki_naver_ai.Adapter.Adapter;
 import com.example.kimsuki_naver_ai.FileChooser;
 import com.example.kimsuki_naver_ai.Model.AudioModel;
+import com.example.kimsuki_naver_ai.Network.Network;
 import com.example.kimsuki_naver_ai.R;
 import com.example.kimsuki_naver_ai.Service.MyService;
+import com.google.gson.Gson;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.runtime.Permission;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,12 +35,15 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import cz.msebera.android.httpclient.Header;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button btn_finder, btn_recordStart, btn_recordStop;
     private ListView listview;
     private ArrayList<AudioModel> audioModelArrayList = new ArrayList<>();
+
     private Adapter adapter;
 
     @Override
@@ -42,7 +52,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         bindUI();
         requestPermission();
+        getVoiceList();
     }
+
     //UI
     private void bindUI() {
         btn_finder = findViewById(R.id.btn_finder);
@@ -66,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
     }
+
     //FUNCTIONS
     private void requestPermission() {
 
@@ -113,12 +126,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 })
                 .start();
     }
+
     private void getAudioFile() {
         Intent intent_upload = new Intent();
         intent_upload.setType("audio/*");
         intent_upload.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent_upload, 1);
     }
+
     private void playAudioFile(Uri uri, String AudioName) {
         /** open player  */
         Intent intent = new Intent(this, URLMediaPlayerActivity.class);
@@ -126,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         intent.putExtra("name", AudioName);
         startActivity(intent);
     }
+
     private String getFileName(Uri uri) {
         String result = null;
         if (uri.getScheme().equals("content")) {
@@ -147,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         return result;
     }
+
     //NETWORK
     private void uploadFile(String path) {
         RequestParams params = new RequestParams();
@@ -157,30 +174,65 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             params.put("voicefile", file);
             params.put("phone", "test010");
             params.put("createdAt", "test");
-            Log.e("file in parameter","success");
+            Log.e("file in parameter", "success");
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            Log.e("file in parameter","fail");
+            Log.e("file in parameter", "fail");
 
         }
-//        Network.post(this, "/voices", params, new JsonHttpResponseHandler() {
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-//                super.onSuccess(statusCode, headers, response);
-//                try {
-//                    Toast.makeText(getApplicationContext(), response.getString("id"), Toast.LENGTH_SHORT).show();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-//                super.onFailure(statusCode, headers, responseString, throwable);
-//                Log.d("Failed: ", "" + statusCode);
-//                Log.d("Error : ", "" + throwable);
-//            }
-//        });//network
+        Network.post(this, "/voices", params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+                    Log.e("success response", response.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.d("Failed: ", "" + statusCode);
+                Log.d("Error : ", "" + throwable);
+            }
+        });//network
+    }
+
+    private void getVoiceList() {
+        RequestParams params = new RequestParams();
+        params.put("limit", "10");
+        Log.e("getVoiceList", "called");
+
+        Network.get(this, "/voices", params, new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+                    Log.e("success response",response.toString());
+                    Gson gson = new Gson();
+
+                    JSONArray value = response;
+                    for (int i = 0; i < value.length(); i++) {
+                        String jsonstr = value.get(i).toString();
+                        Log.e("jsonstr",jsonstr);
+                        AudioModel audioModel = gson.fromJson(jsonstr, AudioModel.class);
+                        audioModelArrayList.add(audioModel);
+                    }
+                    adapter.notifyDataSetChanged();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.d("Failed: ", "" + statusCode);
+                Log.d("Error : ", "" + throwable);
+            }
+        });//network
     }
 
 
@@ -205,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 AudioModel audioModel = new AudioModel();
                 audioModel.setDate("test date");
-                audioModel.setName(fileName);
+                audioModel.setPhoneNumber(fileName);
                 audioModel.setUri(AudioUri);
                 audioModel.setPath(FileChooser.getPath(this, uri));
 
@@ -216,6 +268,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

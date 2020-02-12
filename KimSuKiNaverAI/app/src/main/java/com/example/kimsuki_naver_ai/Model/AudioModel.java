@@ -3,25 +3,44 @@ package com.example.kimsuki_naver_ai.Model;
 import android.net.Uri;
 
 public class AudioModel {
-    private String name;
+    private int id;
+    private String createdAt;
+    private String phoneNumber;
+    private String[] tags;
     private Uri uri;
     private String date;
     private String path;
 
-    public String getPath() {
-        return path;
+    public int getId() {
+        return id;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String[] getTags() {
+        return tags;
+    }
+
+    public void setTags(String[] tags) {
+        this.tags = tags;
     }
 
     public Uri getUri() {
@@ -38,5 +57,13 @@ public class AudioModel {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 }
