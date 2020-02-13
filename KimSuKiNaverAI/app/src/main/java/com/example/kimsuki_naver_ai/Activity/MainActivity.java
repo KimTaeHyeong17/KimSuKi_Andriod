@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -44,11 +46,15 @@ import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button btn_finder, btn_recordStart, btn_recordStop;
+    private LinearLayout btn_finder;
+    private Button btn_recordStart, btn_recordStop;
+    private ImageButton btn_record;
     private ListView listview;
     private ArrayList<AudioModel> audioModelArrayList = new ArrayList<>();
 
     private Adapter adapter;
+
+    private boolean isRecording = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +68,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //UI
     private void bindUI() {
         btn_finder = findViewById(R.id.btn_finder);
-        btn_recordStart = findViewById(R.id.btn_recordStart);
-        btn_recordStop = findViewById(R.id.btn_recordStop);
+        btn_record = findViewById(R.id.btn_record);
         listview = findViewById(R.id.listview);
 
         btn_finder.setOnClickListener(this);
-        btn_recordStart.setOnClickListener(this);
-        btn_recordStop.setOnClickListener(this);
+        btn_record.setOnClickListener(this);
 
         adapter = new Adapter(this, audioModelArrayList);
         listview.setAdapter(adapter);
@@ -76,9 +80,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 AudioModel data = audioModelArrayList.get(position);
-                if (data.getUri() == null){
-                    Toast.makeText(getApplicationContext(),"uri가 널인깝숑",Toast.LENGTH_SHORT).show();
-                }else{
+                if (data.getUri() == null) {
+                    Toast.makeText(getApplicationContext(), "uri가 널인깝숑", Toast.LENGTH_SHORT).show();
+                } else {
                     playAudioFile(data.getUri(), String.valueOf(data.getId()));
                 }
             }
@@ -88,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setTitle("삭제하기");
-                builder.setMessage(audioModelArrayList.get(position).getId()+"롱클릭");
+                builder.setMessage(audioModelArrayList.get(position).getId() + "롱클릭");
                 builder.setCancelable(true);
                 builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
@@ -111,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
+
     //FUNCTIONS
     private void requestPermission() {
 
@@ -158,12 +163,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 })
                 .start();
     }
+
     private void getAudioFile() {
         Intent intent_upload = new Intent();
         intent_upload.setType("audio/*");
         intent_upload.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent_upload, 1);
     }
+
     private void playAudioFile(Uri uri, String AudioName) {
         /** open player  */
         Intent intent = new Intent(this, URLMediaPlayerActivity.class);
@@ -171,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         intent.putExtra("name", AudioName);
         startActivity(intent);
     }
+
     private String getFileName(Uri uri) {
         String result = null;
         if (uri.getScheme().equals("content")) {
@@ -194,76 +202,67 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //NETWORK
-    private void uploadFile(AudioModel model) {
+    private void uploadFile(Uri uri) {
         RequestParams params = new RequestParams();
-        File file = new File(model.getPath());
-
+        File file = new File(FileChooser.getPath(this, uri));
         try {
             params.put("voicefile", file);
-            params.put("phone", "test010");
-            params.put("createdAt", "test");
-            Log.e("file in parameter", "success");
+            params.put("file_path",uri.toString());
+            params.put("phone", "testphone");
+            params.put("createdAt", "testcreatat");
 
+            Log.e("file in parameter", uri.toString());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             Log.e("file in parameter", "fail");
-
         }
-        Network.post(this, "/voices", params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
-                try {
-                    Toast.makeText(getApplicationContext(),"파일 업로드가 완료되었습니다",Toast.LENGTH_SHORT).show();
-                    Log.e("success response", response.toString());
-                    getVoiceList();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+       Network.post(this,"/voices",params,new JsonHttpResponseHandler(){
+           @Override
+           public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+               super.onSuccess(statusCode, headers, response);
+               Log.e("upload success",response.toString());
+           }
 
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                Log.d("Failed: ", "" + statusCode);
-                Log.d("Error : ", "" + throwable);
-            }
-        });//network
+           @Override
+           public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+               super.onFailure(statusCode, headers, throwable, errorResponse);
+
+           }
+       });
+
+
     }
+
     private void getVoiceList() {
-        RequestParams params = new RequestParams();
-        params.put("limit", "10");
         Log.e("getVoiceList", "called");
-
+        RequestParams params = new RequestParams();
         Network.get(this, "/voices", params, new JsonHttpResponseHandler() {
-
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 super.onSuccess(statusCode, headers, response);
                 try {
-                    Log.e("success response",response.toString());
+                    Log.e("success response", response.toString());
+                    audioModelArrayList.clear();
                     Gson gson = new Gson();
-
                     JSONArray value = response;
                     for (int i = 0; i < value.length(); i++) {
                         String jsonstr = value.get(i).toString();
-                        Log.e("jsonstr",jsonstr);
                         AudioModel audioModel = gson.fromJson(jsonstr, AudioModel.class);
                         audioModelArrayList.add(audioModel);
+                        Log.e("filePath", String.valueOf(audioModel.getFile_path()));
                     }
                     adapter.notifyDataSetChanged();
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
-                Log.d("Failed: ", "" + statusCode);
+                Log.d("Failed: ", ""+statusCode);
                 Log.d("Error : ", "" + throwable);
             }
         });//network
     }
-    
 
 
     @Override
@@ -277,21 +276,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     e.printStackTrace();
                 }
                 //the selected audio.
-                Uri AudioUri = data.getData();
-                String fileName = getFileName(AudioUri);
-
-                Log.e("audio file name : ", fileName);
-                Log.e("audio file uri : ", AudioUri.getPath());
-                Log.e("new path", FileChooser.getPath(this, uri));
-
-                AudioModel audioModel = new AudioModel();
-                audioModel.setDate("test date");
-                audioModel.setPhoneNumber(fileName);
-                audioModel.setUri(AudioUri); //for play media
-                audioModel.setPath(FileChooser.getPath(this, uri)); //for upload
-
-                uploadFile(audioModel);
-
+                Uri audioUri = data.getData();
+//                playAudioFile(audioUri,"몰라");
+//                Log.e("uri string",audioUri.toString());
+                uploadFile(audioUri);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -303,22 +291,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_finder:
                 getAudioFile();
                 break;
-            case R.id.btn_recordStart:
-                Log.d("test", "액티비티-서비스 시작버튼클릭");
-                Intent intent1 = new Intent(
-                        getApplicationContext(),//현재제어권자
-                        MyService.class); // 이동할 컴포넌트
-                intent1.putExtra("number", "fromButton");
-                startService(intent1); // 서비스 시작
-                break;
-            case R.id.btn_recordStop:
-                // 서비스 종료하기
-                Log.d("test", "액티비티-서비스 종료버튼클릭");
-                Intent intent2 = new Intent(
-                        getApplicationContext(),//현재제어권자
-                        MyService.class); // 이동할 컴포넌트
-                intent2.putExtra("number", "fromButton");
-                stopService(intent2); // 서비스 종료
+
+            case R.id.btn_record:
+                if(isRecording){
+                    // 서비스 종료하기
+                    Log.d("test", "액티비티-서비스 종료버튼클릭");
+                    Intent intent2 = new Intent(
+                            getApplicationContext(),//현재제어권자
+                            MyService.class); // 이동할 컴포넌트
+                    intent2.putExtra("number", "fromButton");
+                    stopService(intent2); // 서비스 종료
+                    isRecording = false;
+                }else{
+                    // 서비스 시작하기
+                    Log.d("test", "액티비티-서비스 시작버튼클릭");
+                    Intent intent1 = new Intent(
+                            getApplicationContext(),//현재제어권자
+                            MyService.class); // 이동할 컴포넌트
+                    intent1.putExtra("number", "fromButton");
+                    startService(intent1); // 서비스 시작
+                    isRecording = true;
+                }
                 break;
             default:
 

@@ -1,26 +1,37 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_audio_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.example.kimsuki_naver_ai.Activity.URLMediaPlayerActivity">
 
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:alpha="0.7"
-        android:background="#000000"
         android:orientation="vertical">
+
+
+        <ImageView
+            android:layout_marginLeft="10dp"
+            android:id="@+id/btn_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="28dp"
+            android:src="@drawable/ic_arrow_left" />
+
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Now playing:"
-            android:textColor="#FFFFFF"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="15dp"
+            android:text="김윤호:"
+            android:textColor="#000000"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -28,119 +39,163 @@
             android:id="@+id/now_playing_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textView"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_gravity="center"
-            android:text="Now playing.."
-            android:textColor="#FFFFFF"
+            android:layout_marginLeft="20dp"
+            android:text="202001.02 오후 2:05"
+            android:textColor="#000000"
             android:textSize="16sp"
             android:textStyle="italic" />
 
-        <Button
-            android:id="@+id/btn_upload"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_toRightOf="@+id/now_playing_text"
-            android:text="업로드" />
-    </RelativeLayout>
 
-    <LinearLayout
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center">
+
+            <ImageButton
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_star_fill" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="#EDEDED" />
+
+            <ImageButton
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_phone" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="#EDEDED" />
+
+            <ImageButton
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_download" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#EDEDED" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignTop="@+id/controls"
-        android:alpha="0.7"
-        android:background="#000000">
+        android:layout_height="0dp">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="iawjefiojwaeoifjoweiajfiowjaefiojwaoiejfoiwajefoijwaeoifjiawjefiojwaeoifjoweiajfiowjaefiojwaoiejfoiwajefoijwaeoifjiawjefiojwaeoifjoweiajfiowjaefiojwaoiejfoiwajefoijwaeoifjiawjefiojwaeoifjoweiajfiowjae\iojwaoiejfoiwajefoijwaeoifj" />
 
-    <LinearLayout
-        android:id="@+id/controls"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/controls_bar"
-        android:layout_centerHorizontal="true"
-        android:orientation="horizontal"
-        android:padding="5dp">
+        </LinearLayout>
+    </ScrollView>
 
 
-        <ImageButton
-            android:id="@+id/btn_backward"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/btn_pause"
-            android:background="@null"
-            android:src="@drawable/ic_audio_backward"
-            android:text="Bw" />
-
-        <ImageButton
-            android:id="@+id/btn_pause"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/btn_play"
-            android:background="@null"
-            android:src="@drawable/ic_audio_pasue"
-            android:text="Pause" />
-
-        <ImageButton
-            android:id="@+id/btn_play"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:background="@null"
-            android:src="@drawable/ic_audio_play"
-            android:text="Play" />
-
-        <ImageButton
-            android:id="@+id/btn_forward"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/btn_play"
-            android:background="@null"
-            android:src="@drawable/ic_audio_forward"
-            android:text="Fw" />
-
-    </LinearLayout>
 
 
     <LinearLayout
-        android:id="@+id/controls_bar"
+        android:background="#242857"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:layout_height="140dp"
+        android:orientation="vertical">
 
-
-        <TextView
-            android:id="@+id/currentTime"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/controls_bar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="00:00:00"
-            android:textColor="#FFFFFF" />
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
 
-        <SeekBar
-            android:id="@+id/seekBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_weight="1"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp" />
 
-        <TextView
-            android:id="@+id/totalTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="00:00:00"
-            android:textColor="#FFFFFF" />
+            <TextView
+                android:id="@+id/currentTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="00:00:00"
+                android:textColor="#FFFFFF" />
 
+            <SeekBar
+                android:thumb="@drawable/seek_thumb"
+                android:progressDrawable="@drawable/seek_bar"
+                android:id="@+id/seekBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp" />
+
+            <TextView
+                android:id="@+id/totalTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="00:00:00"
+                android:textColor="#FFFFFF" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/controls"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+
+            <ImageButton
+                android:id="@+id/btn_backward"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/ic_audio_back" />
+
+            <ImageButton
+                android:id="@+id/btn_pause"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/btn_play"
+                android:background="@null"
+                android:src="@drawable/ic_audio_pasue"
+                android:text="Pause" />
+
+            <ImageButton
+                android:id="@+id/btn_play"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@null"
+                android:src="@drawable/ic_audio_play"
+                android:text="Play" />
+
+            <ImageButton
+                android:id="@+id/btn_forward"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/ic_audio_foward" />
+
+        </LinearLayout>
     </LinearLayout>
 
-</RelativeLayout>
+
+</LinearLayout>

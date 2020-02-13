@@ -10,7 +10,7 @@ import com.loopj.android.http.RequestParams;
 import java.util.Locale;
 
 public class Network {
-    public static String BASE_URL = "http://49.50.164.31";
+    public static String BASE_URL = "http://49.50.165.233";
 
     private static AsyncHttpClient client = new AsyncHttpClient();
 
@@ -35,8 +35,5 @@ public class Network {
         client.setURLEncodingEnabled(false);
         client.post(BASE_URL + url, params, responseHandler);
     }
-
-
-
 
 }

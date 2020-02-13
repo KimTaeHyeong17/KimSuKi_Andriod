@@ -3,13 +3,25 @@ package com.example.kimsuki_naver_ai.Model;
 import android.net.Uri;
 
 public class AudioModel {
+
     private int id; //id
     private String createdAt; //date
     private String phoneNumber; //number
-    private String[] tags;
+    private TagModel[] tags;
+    private String file_path;
+
+
     private Uri uri; //for play media
     private String date;
-    private String path; //for upload
+
+    public String getFile_path() {
+        return file_path;
+    }
+
+    public void setFile_path(String file_path) {
+        this.file_path = file_path;
+    }
+
 
     public int getId() {
         return id;
@@ -35,11 +47,11 @@ public class AudioModel {
         this.phoneNumber = phoneNumber;
     }
 
-    public String[] getTags() {
+    public TagModel[] getTags() {
         return tags;
     }
 
-    public void setTags(String[] tags) {
+    public void setTags(TagModel[] tags) {
         this.tags = tags;
     }
 
@@ -59,11 +71,4 @@ public class AudioModel {
         this.date = date;
     }
 
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
 }

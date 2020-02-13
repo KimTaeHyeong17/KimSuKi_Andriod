@@ -40,7 +40,7 @@ public class Adapter extends BaseAdapter {
             v = new ViewHolder();
             v.tv_name = convertView.findViewById(R.id.tv_name);
             v.tv_date = convertView.findViewById(R.id.tv_date);
-            v.tv_tag = convertView.findViewById(R.id.tv_tag);
+            v.tv_tag = convertView.findViewById(R.id.tv_tag_1);
 
             convertView.setTag(v);
         }else{

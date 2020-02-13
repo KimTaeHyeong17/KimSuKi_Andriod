@@ -35,7 +35,6 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
     private SeekBar seekBar;
     private ImageButton btn_backward, btn_pause, btn_play, btn_forward;
     private TextView tv_now_playing_text;
-    private Button btn_upload;
     private Uri uri;
     private Handler mHandler = new Handler();
     private Runnable mRunnable = new Runnable() {
@@ -105,14 +104,12 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
         btn_pause = findViewById(R.id.btn_pause);
         btn_play = findViewById(R.id.btn_play);
         btn_forward = findViewById(R.id.btn_forward);
-        btn_upload = findViewById(R.id.btn_upload);
 
         btn_backward.setOnClickListener(this);
         btn_pause.setOnClickListener(this);
         btn_play.setOnClickListener(this);
         btn_forward.setOnClickListener(this);
 
-        btn_upload.setOnClickListener(this);
         tv_now_playing_text = findViewById(R.id.now_playing_text);
 
     }
@@ -231,9 +228,7 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
             case R.id.btn_backward:
                 seekBackward();
                 break;
-            case R.id.btn_upload:
-//                uploadFile();
-                break;
+
             default:
                 break;
         }
