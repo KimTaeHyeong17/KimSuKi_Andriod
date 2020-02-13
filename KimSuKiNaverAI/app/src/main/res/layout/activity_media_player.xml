@@ -63,7 +63,7 @@
 
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/tv_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -74,7 +74,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/now_playing_text"
+                    android:id="@+id/tv_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -167,6 +167,7 @@
                         android:textSize="20sp" />
 
                     <TextView
+                        android:id="@+id/tv_keyword_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="시간 키워드"
@@ -193,6 +194,7 @@
                         android:textSize="20sp" />
 
                     <TextView
+                        android:id="@+id/tv_keyword_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="시간 키워드"
@@ -219,6 +221,7 @@
                         android:textSize="20sp" />
 
                     <TextView
+                        android:id="@+id/tv_keyword_place"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="시간 키워드"

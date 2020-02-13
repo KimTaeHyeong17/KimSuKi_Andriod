@@ -35,6 +35,8 @@ import cz.msebera.android.httpclient.Header;
 
 public class URLMediaPlayerActivity extends Activity implements View.OnClickListener {
 
+
+    private TextView tv_name, tv_date, tv_keyword_time, tv_keyword_date, tv_keyword_place;
     private MediaPlayer mediaPlayer;
     private SeekBar seekBar;
     private ImageButton btn_backward, btn_pause, btn_play, btn_forward;
@@ -110,6 +112,12 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
 
     //UI
     private void bindUI() {
+        tv_name.findViewById(R.id.tv_name);
+        tv_date.findViewById(R.id.tv_date);
+        tv_keyword_time.findViewById(R.id.tv_keyword_time);
+        tv_keyword_date.findViewById(R.id.tv_keyword_date);
+        tv_keyword_place.findViewById(R.id.tv_keyword_place);
+
         btn_backward = findViewById(R.id.btn_backward);
         btn_pause = findViewById(R.id.btn_pause);
         btn_play = findViewById(R.id.btn_play);
@@ -121,7 +129,6 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
         btn_play.setOnClickListener(this);
         btn_forward.setOnClickListener(this);
         btn_back.setOnClickListener(this);
-        tv_now_playing_text = findViewById(R.id.now_playing_text);
 
     }
 
@@ -243,9 +250,15 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
                     Gson gson = new Gson();
                     JSONObject value = response;
                     String jsonstr = value.toString();
-                    AudioDetailModel audioDetailModel = gson.fromJson(jsonstr, AudioDetailModel.class);
 
-                    Log.e("getVoiceInfo", audioDetailModel.getScript());
+                    AudioDetailModel audioDetailModel = gson.fromJson(jsonstr, AudioDetailModel.class);
+                    tv_name.setText(audioDetailModel.getPhoneNumber());
+                    tv_date.setText(audioDetailModel.getUpdatedAt());
+                    tv_keyword_time.setText(audioDetailModel.getSch_t());
+                    tv_keyword_date.setText(audioDetailModel.getSch_d());
+                    tv_keyword_place.setText(audioDetailModel.getSch_p());
+
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
