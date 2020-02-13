@@ -45,8 +45,9 @@ import cz.msebera.android.httpclient.Header;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-
-    private LinearLayout btn_finder;
+    private Button btn_important_record, btn_today_record, btn_all_record;
+    private LinearLayout layout_home, layout_settings, layout_todo;
+    private LinearLayout btn_finder, btn_home, btn_setting, btn_todo;
     private Button btn_recordStart, btn_recordStop;
     private ImageButton btn_record;
     private ListView listview;
@@ -67,12 +68,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //UI
     private void bindUI() {
+        btn_important_record = findViewById(R.id.btn_important_record);
+        btn_today_record = findViewById(R.id.btn_today_record);
+        btn_all_record = findViewById(R.id.btn_all_record);
+
+        btn_important_record.setOnClickListener(this);
+        btn_today_record.setOnClickListener(this);
+        btn_all_record.setOnClickListener(this);
+
+        layout_home = findViewById(R.id.layout_home);
+        layout_settings = findViewById(R.id.layout_settings);
+        layout_todo = findViewById(R.id.layout_todo);
+
+
+        btn_home = findViewById(R.id.btn_home);
         btn_finder = findViewById(R.id.btn_finder);
         btn_record = findViewById(R.id.btn_record);
-        listview = findViewById(R.id.listview);
+        btn_todo = findViewById(R.id.btn_todo);
+        btn_setting = findViewById(R.id.btn_setting);
 
+        btn_home.setOnClickListener(this);
         btn_finder.setOnClickListener(this);
         btn_record.setOnClickListener(this);
+        btn_todo.setOnClickListener(this);
+        btn_setting.setOnClickListener(this);
+
+        listview = findViewById(R.id.listview);
+
 
         adapter = new Adapter(this, audioModelArrayList);
         listview.setAdapter(adapter);
@@ -201,13 +223,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return result;
     }
 
+    private void navigationBarController(int status) {
+        switch (status) {
+            case 1:
+                layout_home.setVisibility(View.VISIBLE);
+                layout_settings.setVisibility(View.GONE);
+                layout_todo.setVisibility(View.GONE);
+                break;
+            case 2:
+                layout_home.setVisibility(View.GONE);
+                layout_todo.setVisibility(View.VISIBLE);
+                layout_settings.setVisibility(View.GONE);
+
+                break;
+            case 3:
+                layout_home.setVisibility(View.GONE);
+                layout_todo.setVisibility(View.GONE);
+                layout_settings.setVisibility(View.VISIBLE);
+                break;
+        }
+
+    }
+
     //NETWORK
     private void uploadFile(Uri uri) {
         RequestParams params = new RequestParams();
         File file = new File(FileChooser.getPath(this, uri));
         try {
             params.put("voicefile", file);
-            params.put("file_path",uri.toString());
+            params.put("file_path", uri.toString());
             params.put("phone", "testphone");
             params.put("createdAt", "testcreatat");
 
@@ -216,19 +260,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
             Log.e("file in parameter", "fail");
         }
-       Network.post(this,"/voices",params,new JsonHttpResponseHandler(){
-           @Override
-           public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-               super.onSuccess(statusCode, headers, response);
-               Log.e("upload success",response.toString());
-           }
+        Network.post(this, "/voices", params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.e("upload success", response.toString());
+            }
 
-           @Override
-           public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-               super.onFailure(statusCode, headers, throwable, errorResponse);
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
 
-           }
-       });
+            }
+        });
 
 
     }
@@ -256,12 +300,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     e.printStackTrace();
                 }
             }
+
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
-                Log.d("Failed: ", ""+statusCode);
+                Log.d("Failed: ", "" + statusCode);
                 Log.d("Error : ", "" + throwable);
             }
         });//network
+    }
+
+    private void getVoiceInfo() {
+        RequestParams params = new RequestParams();
+        params.put("id", "2");
+
+
     }
 
 
@@ -293,25 +345,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.btn_record:
-                if(isRecording){
-                    // 서비스 종료하기
-                    Log.d("test", "액티비티-서비스 종료버튼클릭");
-                    Intent intent2 = new Intent(
-                            getApplicationContext(),//현재제어권자
-                            MyService.class); // 이동할 컴포넌트
-                    intent2.putExtra("number", "fromButton");
-                    stopService(intent2); // 서비스 종료
-                    isRecording = false;
-                }else{
-                    // 서비스 시작하기
-                    Log.d("test", "액티비티-서비스 시작버튼클릭");
-                    Intent intent1 = new Intent(
-                            getApplicationContext(),//현재제어권자
-                            MyService.class); // 이동할 컴포넌트
-                    intent1.putExtra("number", "fromButton");
-                    startService(intent1); // 서비스 시작
-                    isRecording = true;
-                }
+//                if (isRecording) {
+//                    // 서비스 종료하기
+//                    Log.d("test", "액티비티-서비스 종료버튼클릭");
+//                    Intent intent2 = new Intent(
+//                            getApplicationContext(),//현재제어권자
+//                            MyService.class); // 이동할 컴포넌트
+//                    intent2.putExtra("number", "fromButton");
+//                    stopService(intent2); // 서비스 종료
+//                    isRecording = false;
+//                } else {
+//                    // 서비스 시작하기
+//                    Log.d("test", "액티비티-서비스 시작버튼클릭");
+//                    Intent intent1 = new Intent(
+//                            getApplicationContext(),//현재제어권자
+//                            MyService.class); // 이동할 컴포넌트
+//                    intent1.putExtra("number", "fromButton");
+//                    startService(intent1); // 서비스 시작
+//                    isRecording = true;
+//                }
+                Intent intent = new Intent(this, URLMediaPlayerActivity.class);
+
+                startActivity(intent);
+                break;
+
+            case R.id.btn_home:
+                navigationBarController(1);
+                break;
+            case R.id.btn_todo:
+                navigationBarController(2);
+                break;
+            case R.id.btn_setting:
+                navigationBarController(3);
+                break;
+            case R.id.btn_important_record:
+                break;
+            case R.id.btn_today_record:
+                break;
+            case R.id.btn_all_record:
                 break;
             default:
 
