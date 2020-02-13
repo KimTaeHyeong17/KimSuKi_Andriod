@@ -1,12 +1,14 @@
 package com.example.kimsuki_naver_ai.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
@@ -17,11 +19,15 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kimsuki_naver_ai.Adapter.Adapter;
+import com.example.kimsuki_naver_ai.Adapter.TodoAdapter;
 import com.example.kimsuki_naver_ai.FileChooser;
+import com.example.kimsuki_naver_ai.Model.AudioDetailModel;
 import com.example.kimsuki_naver_ai.Model.AudioModel;
+import com.example.kimsuki_naver_ai.Model.ScheduleModel;
 import com.example.kimsuki_naver_ai.Network.Network;
 import com.example.kimsuki_naver_ai.R;
 import com.example.kimsuki_naver_ai.Service.MyService;
@@ -40,22 +46,29 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.Header;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private Button btn_important_record, btn_today_record, btn_all_record;
+    private Button btn_important_record, btn_today_record, btn_all_record, btn_refresh;
     private LinearLayout layout_home, layout_settings, layout_todo;
     private LinearLayout btn_finder, btn_home, btn_setting, btn_todo;
     private Button btn_recordStart, btn_recordStop;
     private ImageButton btn_record;
-    private ListView listview;
+    private ListView listview, todo_listview;
     private ArrayList<AudioModel> audioModelArrayList = new ArrayList<>();
-
+    private ArrayList<ScheduleModel> scheduleModelArrayList = new ArrayList<>();
+    private TextView cardview_1_title, cardview_1_content, cardview_1_date,
+            cardview_2_title, cardview_2_content, cardview_2_date,
+            cardview_3_title, cardview_3_content, cardview_3_date,
+            cardview_4_title, cardview_4_content, cardview_4_date;
     private Adapter adapter;
+    private TodoAdapter todoAdapter;
+    private CardView cardview_1, cardview_2, cardview_3, cardview_4;
 
-    private boolean isRecording = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,18 +76,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         bindUI();
         requestPermission();
-        getVoiceList();
+        tapbarController(1);
+        getSchedule();
     }
 
     //UI
     private void bindUI() {
+        cardview_1_title = findViewById(R.id.cardview_1_title);
+        cardview_1_content = findViewById(R.id.cardview_1_content);
+        cardview_1_date = findViewById(R.id.cardview_1_date);
+        cardview_2_title = findViewById(R.id.cardview_2_title);
+        cardview_2_content = findViewById(R.id.cardview_2_content);
+        cardview_2_date = findViewById(R.id.cardview_2_date);
+        cardview_3_title = findViewById(R.id.cardview_3_title);
+        cardview_3_date = findViewById(R.id.cardview_3_date);
+        cardview_3_content = findViewById(R.id.cardview_3_content);
+        cardview_4_title = findViewById(R.id.cardview_4_title);
+        cardview_4_content = findViewById(R.id.cardview_4_content);
+        cardview_4_date = findViewById(R.id.cardview_4_date);
+
+
+        cardview_1 = findViewById(R.id.cardview_1);
+        cardview_2 = findViewById(R.id.cardview_2);
+        cardview_3 = findViewById(R.id.cardview_3);
+        cardview_4 = findViewById(R.id.cardview_4);
+
         btn_important_record = findViewById(R.id.btn_important_record);
         btn_today_record = findViewById(R.id.btn_today_record);
         btn_all_record = findViewById(R.id.btn_all_record);
+        btn_refresh = findViewById(R.id.btn_refresh);
 
         btn_important_record.setOnClickListener(this);
         btn_today_record.setOnClickListener(this);
         btn_all_record.setOnClickListener(this);
+        btn_refresh.setOnClickListener(this);
 
         layout_home = findViewById(R.id.layout_home);
         layout_settings = findViewById(R.id.layout_settings);
@@ -94,18 +129,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_setting.setOnClickListener(this);
 
         listview = findViewById(R.id.listview);
-
-
         adapter = new Adapter(this, audioModelArrayList);
         listview.setAdapter(adapter);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 AudioModel data = audioModelArrayList.get(position);
-                if (data.getUri() == null) {
+                if (data.getFile_path() == null) {
                     Toast.makeText(getApplicationContext(), "uri가 널인깝숑", Toast.LENGTH_SHORT).show();
                 } else {
-                    playAudioFile(data.getUri(), String.valueOf(data.getId()));
+                    playAudioFile(data.getFile_path(), String.valueOf(data.getPhoneNumber()), data.getId());
                 }
             }
         });
@@ -136,6 +169,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
             }
         });
+
+
+        todo_listview = findViewById(R.id.todo_listview);
+        todoAdapter = new TodoAdapter(this, scheduleModelArrayList);
+        todo_listview.setAdapter(todoAdapter);
     }
 
     //FUNCTIONS
@@ -193,11 +231,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivityForResult(intent_upload, 1);
     }
 
-    private void playAudioFile(Uri uri, String AudioName) {
+    private void playAudioFile(String uriString, String AudioName, int Id) {
         /** open player  */
         Intent intent = new Intent(this, URLMediaPlayerActivity.class);
-        intent.setData(uri);
+        intent.putExtra("uriString", uriString);
         intent.putExtra("name", AudioName);
+        intent.putExtra("id", Id);
         startActivity(intent);
     }
 
@@ -220,6 +259,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 result = result.substring(cut + 1);
             }
         }
+
+        Pattern p = Pattern.compile("\\d{3}-\\d{4}-\\d{4}");
+        Matcher m = p.matcher(result);
+        while (m.find()) {
+            return m.group();
+        }
         return result;
     }
 
@@ -234,28 +279,122 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 layout_home.setVisibility(View.GONE);
                 layout_todo.setVisibility(View.VISIBLE);
                 layout_settings.setVisibility(View.GONE);
-
                 break;
             case 3:
                 layout_home.setVisibility(View.GONE);
                 layout_todo.setVisibility(View.GONE);
                 layout_settings.setVisibility(View.VISIBLE);
+
                 break;
         }
 
+    }
+
+    private void tapbarController(int status) {
+        switch (status) {
+            case 1:
+                btn_all_record.setTypeface(null, Typeface.BOLD);
+                btn_today_record.setTypeface(null, Typeface.NORMAL);
+                btn_important_record.setTypeface(null, Typeface.NORMAL);
+                getVoiceList(false, false);
+                Toast.makeText(MainActivity.this, "전체기록을 불러옵니다.", Toast.LENGTH_SHORT).show();
+
+                break;
+            case 2:
+                btn_all_record.setTypeface(null, Typeface.NORMAL);
+                btn_today_record.setTypeface(null, Typeface.BOLD);
+                btn_important_record.setTypeface(null, Typeface.NORMAL);
+                getVoiceList(true, false);
+                Toast.makeText(MainActivity.this, "오늘 불러옵니다.", Toast.LENGTH_SHORT).show();
+
+                break;
+            case 3:
+                btn_all_record.setTypeface(null, Typeface.NORMAL);
+                btn_today_record.setTypeface(null, Typeface.NORMAL);
+                btn_important_record.setTypeface(null, Typeface.BOLD);
+                getVoiceList(false, true);
+                Toast.makeText(MainActivity.this, "중요기록을 불러옵니다.", Toast.LENGTH_SHORT).show();
+
+                break;
+        }
+    }
+
+    private void populateCardView() {
+        for (int i = 0; i < scheduleModelArrayList.size(); i++) {
+            ScheduleModel scheduleModel = scheduleModelArrayList.get(i);
+            if (i == 0) {
+                cardview_1.setVisibility(View.VISIBLE);
+                cardview_2.setVisibility(View.GONE);
+                cardview_3.setVisibility(View.GONE);
+                cardview_4.setVisibility(View.GONE);
+                cardview_1_title.setText(scheduleModel.getPhoneNumber());
+                cardview_1_content.setText(scheduleModel.getSch_d() + scheduleModel.getSch_t() + scheduleModel.getPhoneNumber());
+                cardview_1_date.setText(scheduleModel.getCreatedAt());
+
+            } else if (i == 1) {
+                cardview_1.setVisibility(View.VISIBLE);
+                cardview_2.setVisibility(View.VISIBLE);
+                cardview_3.setVisibility(View.GONE);
+                cardview_4.setVisibility(View.GONE);
+                cardview_1_title.setText(scheduleModel.getPhoneNumber());
+                cardview_1_content.setText(scheduleModel.getSch_d() + scheduleModel.getSch_t() + scheduleModel.getPhoneNumber());
+                cardview_1_date.setText(scheduleModel.getCreatedAt());
+
+                cardview_2_title.setText(scheduleModel.getPhoneNumber());
+                cardview_2_content.setText(scheduleModel.getSch_d() + scheduleModel.getSch_t() + scheduleModel.getPhoneNumber());
+                cardview_2_date.setText(scheduleModel.getCreatedAt());
+
+            } else if (i == 2) {
+                cardview_1.setVisibility(View.VISIBLE);
+                cardview_2.setVisibility(View.VISIBLE);
+                cardview_3.setVisibility(View.VISIBLE);
+                cardview_4.setVisibility(View.GONE);
+                cardview_1_title.setText(scheduleModel.getPhoneNumber());
+                cardview_1_content.setText(scheduleModel.getSch_d() + scheduleModel.getSch_t() + scheduleModel.getPhoneNumber());
+                cardview_1_date.setText(scheduleModel.getCreatedAt());
+
+                cardview_2_title.setText(scheduleModel.getPhoneNumber());
+                cardview_2_content.setText(scheduleModel.getSch_d() + scheduleModel.getSch_t() + scheduleModel.getPhoneNumber());
+                cardview_2_date.setText(scheduleModel.getCreatedAt());
+
+                cardview_3_title.setText(scheduleModel.getPhoneNumber());
+                cardview_3_content.setText(scheduleModel.getSch_d() + scheduleModel.getSch_t() + scheduleModel.getPhoneNumber());
+                cardview_3_date.setText(scheduleModel.getCreatedAt());
+
+            } else if (i == 3) {
+                cardview_1.setVisibility(View.VISIBLE);
+                cardview_2.setVisibility(View.VISIBLE);
+                cardview_3.setVisibility(View.VISIBLE);
+                cardview_4.setVisibility(View.VISIBLE);
+                cardview_1_title.setText(scheduleModel.getPhoneNumber());
+                cardview_1_content.setText(scheduleModel.getSch_d() + scheduleModel.getSch_t() + scheduleModel.getPhoneNumber());
+                cardview_1_date.setText(scheduleModel.getCreatedAt());
+
+                cardview_2_title.setText(scheduleModel.getPhoneNumber());
+                cardview_2_content.setText(scheduleModel.getSch_d() + scheduleModel.getSch_t() + scheduleModel.getPhoneNumber());
+                cardview_2_date.setText(scheduleModel.getCreatedAt());
+
+                cardview_3_title.setText(scheduleModel.getPhoneNumber());
+                cardview_3_content.setText(scheduleModel.getSch_d() + scheduleModel.getSch_t() + scheduleModel.getPhoneNumber());
+                cardview_3_date.setText(scheduleModel.getCreatedAt());
+
+                cardview_4_title.setText(scheduleModel.getPhoneNumber());
+                cardview_4_content.setText(scheduleModel.getSch_d() + scheduleModel.getSch_t() + scheduleModel.getPhoneNumber());
+                cardview_4_date.setText(scheduleModel.getCreatedAt());
+            }
+        }
     }
 
     //NETWORK
     private void uploadFile(Uri uri) {
         RequestParams params = new RequestParams();
         File file = new File(FileChooser.getPath(this, uri));
+        params.put("file_path", uri.toString());
+        params.put("phone", getFileName(uri));
+        params.put("createdAt", "2020.2.11 10:11"); //2020.2.11 10:11
+        Log.e("phonenumber", getFileName(uri));
         try {
             params.put("voicefile", file);
-            params.put("file_path", uri.toString());
-            params.put("phone", "testphone");
-            params.put("createdAt", "testcreatat");
-
-            Log.e("file in parameter", uri.toString());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             Log.e("file in parameter", "fail");
@@ -264,28 +403,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-                Log.e("upload success", response.toString());
+                Toast.makeText(MainActivity.this, "업로드에 성공했습니다.", Toast.LENGTH_SHORT).show();
+                getVoiceList(false, false);
             }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.d("Failed: ", "" + statusCode);
+                Log.d("Error : ", "" + throwable);
             }
         });
-
-
     }
 
-    private void getVoiceList() {
-        Log.e("getVoiceList", "called");
+    private void getVoiceList(boolean today, boolean star) {
         RequestParams params = new RequestParams();
+        params.put("today", today);
+        params.put("star", star);
         Network.get(this, "/voices", params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 super.onSuccess(statusCode, headers, response);
                 try {
-                    Log.e("success response", response.toString());
                     audioModelArrayList.clear();
                     Gson gson = new Gson();
                     JSONArray value = response;
@@ -293,7 +431,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         String jsonstr = value.get(i).toString();
                         AudioModel audioModel = gson.fromJson(jsonstr, AudioModel.class);
                         audioModelArrayList.add(audioModel);
-                        Log.e("filePath", String.valueOf(audioModel.getFile_path()));
                     }
                     adapter.notifyDataSetChanged();
                 } catch (Exception e) {
@@ -309,11 +446,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });//network
     }
 
-    private void getVoiceInfo() {
+    private void getSchedule() {
         RequestParams params = new RequestParams();
-        params.put("id", "2");
+        Network.get(this, "/schedules", params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+                    scheduleModelArrayList.clear();
+                    Gson gson = new Gson();
+                    JSONArray value = response;
+                    Log.e("value", response.toString());
+                    for (int i = 0; i < value.length(); i++) {
+                        String jsonstr = value.get(i).toString();
+                        ScheduleModel scheduleModel = gson.fromJson(jsonstr, ScheduleModel.class);
+                        scheduleModelArrayList.add(scheduleModel);
+                    }
+                    todoAdapter.notifyDataSetChanged();
+                    populateCardView();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
-
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.d("Failed: ", "" + statusCode);
+                Log.d("Error : ", "" + throwable);
+            }
+        });//network
     }
 
 
@@ -364,8 +525,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                    startService(intent1); // 서비스 시작
 //                    isRecording = true;
 //                }
-                Intent intent = new Intent(this, URLMediaPlayerActivity.class);
 
+                Intent intent = new Intent(Intent.ACTION_CALL);
                 startActivity(intent);
                 break;
 
@@ -378,12 +539,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_setting:
                 navigationBarController(3);
                 break;
-            case R.id.btn_important_record:
+            case R.id.btn_all_record:
+                tapbarController(1);
                 break;
             case R.id.btn_today_record:
+                tapbarController(2);
                 break;
-            case R.id.btn_all_record:
+            case R.id.btn_important_record:
+                tapbarController(3);
                 break;
+            case R.id.btn_refresh:
+                Toast.makeText(MainActivity.this, "새로고침", Toast.LENGTH_SHORT).show();
+                getVoiceList(false, false);
+                getSchedule();
             default:
 
                 break;

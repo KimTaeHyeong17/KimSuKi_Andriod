@@ -54,6 +54,7 @@
     </LinearLayout>
 
     <ListView
+        android:id="@+id/todo_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/todo_listview_item" />

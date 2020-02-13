@@ -25,14 +25,41 @@
                 android:alpha="0.7"
                 android:orientation="vertical">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="28dp">
 
-                <ImageView
-                    android:id="@+id/btn_back"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="28dp"
-                    android:src="@drawable/ic_arrow_left" />
+                    <ImageButton
+                        android:id="@+id/btn_back"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/ic_arrow_left" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <ImageButton
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="18dp"
+                        android:background="@drawable/ic_pencil"
+                        android:backgroundTint="#909897" />
+
+                    <ImageButton
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="20dp"
+                        android:background="@drawable/ic_star"
+                        android:backgroundTint="#D8DCDC" />
+
+
+                </LinearLayout>
 
 
                 <TextView
@@ -41,9 +68,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="15dp"
-                    android:text="김윤호:"
+                    android:text="김윤호"
                     android:textColor="#000000"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -51,52 +78,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
+                    android:layout_marginTop="5dp"
                     android:text="202001.02 오후 2:05"
-                    android:textColor="#000000"
-                    android:textSize="16sp"
-                    android:textStyle="italic" />
+                    android:textColor="#333444"
+                    android:textSize="16sp" />
 
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:gravity="center">
-
-                    <ImageButton
-                        style="@style/Widget.AppCompat.Button.Borderless"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_star_fill" />
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:layout_margin="10dp"
-                        android:background="#EDEDED" />
-
-                    <ImageButton
-                        style="@style/Widget.AppCompat.Button.Borderless"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_phone" />
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:layout_margin="10dp"
-                        android:background="#EDEDED" />
-
-                    <ImageButton
-                        style="@style/Widget.AppCompat.Button.Borderless"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_download" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#EDEDED" />
             </LinearLayout>
 
 
@@ -121,17 +107,130 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <TextView
+                <!--                인플래이팅-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:orientation="vertical">
+
+                    <include
+                        layout="@layout/inflating_item"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp" />
+
+                    <include
+                        layout="@layout/inflating_item"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp" />
+
+                    <include
+                        layout="@layout/inflating_item"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp" />
+
+                    <include
+                        layout="@layout/inflating_item"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp" />
+
+                    <include
+                        layout="@layout/inflating_item"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp" />
+
+                    <include
+                        layout="@layout/inflating_item"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="5dp"
-                    android:text="10명 예약 \n7명 있으면 \n낚시 가려고 \n짐이 많은데 \n방 크기 \n파란 방 주세요" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="시간 키워드" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:text="-"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="시간 키워드"
+                        android:textColor="#000000" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="날짜 키워드" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:text="-"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="시간 키워드"
+                        android:textColor="#000000" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="장소 키워드" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:text="-"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="시간 키워드"
+                        android:textColor="#000000" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="40dp"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -170,10 +269,10 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
                         android:background="@drawable/round_corner_background"
-                        android:backgroundTint="#F5CAC7"
+                        android:backgroundTint="#D1FCE8"
                         android:gravity="center"
                         android:paddingHorizontal="10dp"
-                        android:text="에약"
+                        android:text="10명"
                         android:textColor="#000000" />
 
                     <TextView
@@ -320,16 +419,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_margin="20dp"
             android:orientation="horizontal">
 
-
-            <TextView
-                android:id="@+id/currentTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:text="00:00:00"
-                android:textColor="#FFFFFF" />
 
             <SeekBar
                 android:id="@+id/seekBar"
@@ -342,6 +434,28 @@
                 android:progressDrawable="@drawable/seek_bar"
                 android:thumb="@drawable/seek_thumb" />
 
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/currentTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="00:00:00"
+                android:textColor="#FFFFFF" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
             <TextView
                 android:id="@+id/totalTime"
                 android:layout_width="wrap_content"
@@ -349,7 +463,6 @@
                 android:padding="5dp"
                 android:text="00:00:00"
                 android:textColor="#FFFFFF" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -365,7 +478,9 @@
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="@drawable/ic_audio_back" />
+                android:layout_marginRight="20dp"
+                android:background="@drawable/ic_audio_back"
+                android:backgroundTint="#8F8F90" />
 
             <ImageButton
                 android:id="@+id/btn_pause"
@@ -373,18 +488,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@+id/btn_play"
-                android:background="@null"
-                android:src="@drawable/ic_audio_pasue"
+                android:background="@drawable/ic_pause"
+                android:backgroundTint="#FFFFFF"
                 android:text="Pause" />
 
             <ImageButton
                 android:id="@+id/btn_play"
+
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:background="@null"
-                android:src="@drawable/ic_audio_play"
+                android:background="@drawable/ic_start"
+                android:backgroundTint="#FFFFFF"
                 android:text="Play" />
 
             <ImageButton
@@ -392,7 +508,9 @@
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="@drawable/ic_audio_foward" />
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/ic_audio_foward"
+                android:backgroundTint="#8F8F90" />
 
         </LinearLayout>
 

@@ -15,17 +15,21 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kimsuki_naver_ai.Model.AudioDetailModel;
 import com.example.kimsuki_naver_ai.Network.Network;
 import com.example.kimsuki_naver_ai.R;
 import com.example.kimsuki_naver_ai.Useful;
+import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -36,6 +40,7 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
     private ImageButton btn_backward, btn_pause, btn_play, btn_forward;
     private TextView tv_now_playing_text;
     private Uri uri;
+    private ImageButton btn_back;
     private Handler mHandler = new Handler();
     private Runnable mRunnable = new Runnable() {
         @Override
@@ -90,29 +95,36 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
         setContentView(R.layout.activity_media_player);
 
         // get data from main activity intent
-        Uri audioFile = getIntent().getData();
+        String uriString = getIntent().getExtras().getString("uriString");
+        Uri audioFile = Uri.parse(uriString);
         uri = audioFile;
         String audioName = getIntent().getExtras().getString("name");
+        int id = getIntent().getExtras().getInt("id");
+        getVoiceInfo(id);
+
         // setup ui
         bindUI();
         // setup mediaplayer
         setUpMediaPlayer(audioFile, audioName);
     }
+
     //UI
     private void bindUI() {
         btn_backward = findViewById(R.id.btn_backward);
         btn_pause = findViewById(R.id.btn_pause);
         btn_play = findViewById(R.id.btn_play);
         btn_forward = findViewById(R.id.btn_forward);
+        btn_back = findViewById(R.id.btn_back);
 
         btn_backward.setOnClickListener(this);
         btn_pause.setOnClickListener(this);
         btn_play.setOnClickListener(this);
         btn_forward.setOnClickListener(this);
-
+        btn_back.setOnClickListener(this);
         tv_now_playing_text = findViewById(R.id.now_playing_text);
 
     }
+
     //FUNCTIONS
     private void setUpMediaPlayer(Uri audioFile, String audioName) {
         // create a media player
@@ -150,14 +162,16 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
             });
         } catch (IOException e) {
             Activity a = this;
-            a.finish();
+//            a.finish();
             Toast.makeText(this, "파일을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
         }
     }
+
     public void stop(View view) {
         mediaPlayer.seekTo(0);
         mediaPlayer.pause();
     }
+
     public void seekForward() {
         //set seek time
         int seekForwardTime = 5000;
@@ -172,6 +186,7 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
             mediaPlayer.seekTo(mediaPlayer.getDuration());
         }
     }
+
     public void seekBackward() {
         //set seek time
         int seekBackwardTime = 5000;
@@ -186,6 +201,7 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
             mediaPlayer.seekTo(0);
         }
     }
+
     public void onBackPressed() {
         super.onBackPressed();
 
@@ -196,6 +212,7 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
         }
         finish();
     }
+
     private String getTimeString(long millis) {
         StringBuffer buf = new StringBuffer();
 
@@ -213,6 +230,43 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
         return buf.toString();
     }
 
+    //NETWORK
+    private void getVoiceInfo(int id) {
+        Log.e("getVoiceInfo", "called");
+        RequestParams params = new RequestParams();
+        Network.get(this, "/voices/" + id, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+                    Log.e("success response", response.toString());
+                    Gson gson = new Gson();
+                    JSONObject value = response;
+                    String jsonstr = value.toString();
+                    AudioDetailModel audioDetailModel = gson.fromJson(jsonstr, AudioDetailModel.class);
+
+                    Log.e("getVoiceInfo", audioDetailModel.getScript());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                Log.d("Failed: ", "" + statusCode);
+                Log.d("Error : ", "" + throwable);
+            }
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.d("Failed: ", "" + statusCode);
+                Log.d("Error : ", "" + throwable);
+
+            }
+        });//network
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -228,7 +282,9 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
             case R.id.btn_backward:
                 seekBackward();
                 break;
-
+            case R.id.btn_back:
+                finish();
+                break;
             default:
                 break;
         }

@@ -34,17 +34,30 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="288dp"
+            android:layout_marginTop="-10dp"
             android:background="@drawable/ic_background">
+
+            <TextView
+                android:id="@+id/tv_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="40dp"
+                android:text="개똥님의"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                android:text="개똥님의\n기록된 최근일정"
+                android:text="기록된 최근일정"
                 android:textColor="#ffffff"
-                android:textSize="20sp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
             <View
@@ -68,6 +81,7 @@
                     android:padding="2dp">
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/cardview_1"
                         android:layout_width="213dp"
                         android:layout_height="match_parent"
                         android:layout_marginStart="20dp"
@@ -97,18 +111,21 @@
                                 android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/cardview_1_title"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="김윤호"
                                     android:textStyle="bold" />
 
                                 <TextView
+                                    android:id="@+id/cardview_1_content"
                                     android:layout_width="match_parent"
                                     android:layout_height="0dp"
                                     android:layout_weight="1"
                                     android:text="금요일 전체회의 8시" />
 
                                 <TextView
+                                    android:id="@+id/cardview_1_date"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="bottom"
@@ -123,6 +140,65 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/cardview_2"
+                        android:layout_width="215dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:background="#208020"
+                        app:cardBackgroundColor="#ffffff"
+                        app:cardElevation="10dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="10dp"
+                            android:orientation="horizontal">
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginTop="5dp" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/cardview_2_title"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="김윤호"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/cardview_2_content"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="1"
+                                    android:text="금요일 전체회의 8시" />
+
+                                <TextView
+                                    android:id="@+id/cardview_2_date"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="bottom"
+                                    android:text="2020.01.02 오늘"
+                                    android:textSize="11sp" />
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardview_3"
                         android:layout_width="213dp"
                         android:layout_height="match_parent"
                         android:layout_marginTop="5dp"
@@ -151,18 +227,21 @@
                                 android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/cardview_3_title"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="김윤호"
                                     android:textStyle="bold" />
 
                                 <TextView
+                                    android:id="@+id/cardview_3_content"
                                     android:layout_width="match_parent"
                                     android:layout_height="0dp"
                                     android:layout_weight="1"
                                     android:text="금요일 전체회의 8시" />
 
                                 <TextView
+                                    android:id="@+id/cardview_3_date"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="bottom"
@@ -177,6 +256,7 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/cardview_4"
                         android:layout_width="213dp"
                         android:layout_height="match_parent"
                         android:layout_marginTop="5dp"
@@ -205,72 +285,21 @@
                                 android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/cardview_4_title"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="김윤호"
                                     android:textStyle="bold" />
 
                                 <TextView
+                                    android:id="@+id/cardview_4_content"
                                     android:layout_width="match_parent"
                                     android:layout_height="0dp"
                                     android:layout_weight="1"
                                     android:text="금요일 전체회의 8시" />
 
                                 <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="bottom"
-                                    android:text="2020.01.02 오늘"
-                                    android:textSize="11sp" />
-                            </LinearLayout>
-
-
-                        </LinearLayout>
-
-
-                    </androidx.cardview.widget.CardView>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="213dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="#208020"
-                        app:cardBackgroundColor="#ffffff"
-                        app:cardElevation="10dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="10dp"
-                            android:orientation="horizontal">
-
-                            <CheckBox
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginTop="5dp" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="center_vertical"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="김윤호"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="0dp"
-                                    android:layout_weight="1"
-                                    android:text="금요일 전체회의 8시" />
-
-                                <TextView
+                                    android:id="@+id/cardview_4_date"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="bottom"
@@ -323,12 +352,14 @@
                 android:layout_height="1dp"
                 android:layout_weight="1" />
 
-            <ImageButton
-
+            <Button
+                android:id="@+id/btn_refresh"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_search" />
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_search"
+                android:text="새로고침" />
 
         </LinearLayout>
 

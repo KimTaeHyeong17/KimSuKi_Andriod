@@ -48,7 +48,7 @@
             </LinearLayout>
 
             <LinearLayout
-
+                android:id="@+id/layout_tags"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/img_play"
@@ -82,6 +82,31 @@
                     android:paddingHorizontal="10dp"
                     android:text="8시" />
 
+                <TextView
+                    android:id="@+id/tv_tag_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:background="@drawable/tag_background"
+                    android:paddingHorizontal="10dp"
+                    android:text="8시" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/layout_no_tags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/img_play"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tv_no_tags"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/tag_background"
+                    android:paddingHorizontal="10dp"
+                    android:text="음성 처리중입니다. 잠시만 기다려 주세요." />
 
             </LinearLayout>
         </LinearLayout>
