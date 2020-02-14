@@ -396,24 +396,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 cardview_3.setVisibility(View.VISIBLE);
                 cardview_4.setVisibility(View.VISIBLE);
                 cardview_1_title.setText(scheduleModel.getPhoneNumber());
-                cardview_1_content.setText(scheduleModel.getSch_d() + scheduleModel.getSch_t() + scheduleModel.getPhoneNumber());
+                cardview_1_content.setText(splitBeforeSemicolon(scheduleModel.getSch_d()) + splitBeforeSemicolon(scheduleModel.getSch_t()) + splitBeforeSemicolon(scheduleModel.getPhoneNumber()));
                 cardview_1_date.setText(scheduleModel.getCreatedAt());
 
                 cardview_2_title.setText(scheduleModel.getPhoneNumber());
-                cardview_2_content.setText(scheduleModel.getSch_d() + scheduleModel.getSch_t() + scheduleModel.getPhoneNumber());
+                cardview_2_content.setText(splitBeforeSemicolon(scheduleModel.getSch_d()) + splitBeforeSemicolon(scheduleModel.getSch_t()) + splitBeforeSemicolon(scheduleModel.getPhoneNumber()));
                 cardview_2_date.setText(scheduleModel.getCreatedAt());
 
                 cardview_3_title.setText(scheduleModel.getPhoneNumber());
-                cardview_3_content.setText(scheduleModel.getSch_d() + scheduleModel.getSch_t() + scheduleModel.getPhoneNumber());
+                cardview_3_content.setText(splitBeforeSemicolon(scheduleModel.getSch_d()) + splitBeforeSemicolon(scheduleModel.getSch_t()) + splitBeforeSemicolon(scheduleModel.getPhoneNumber()));
                 cardview_3_date.setText(scheduleModel.getCreatedAt());
 
                 cardview_4_title.setText(scheduleModel.getPhoneNumber());
-                cardview_4_content.setText(scheduleModel.getSch_d() + scheduleModel.getSch_t() + scheduleModel.getPhoneNumber());
+                cardview_4_content.setText(splitBeforeSemicolon(scheduleModel.getSch_d()) + splitBeforeSemicolon(scheduleModel.getSch_t()) + splitBeforeSemicolon(scheduleModel.getPhoneNumber()));
                 cardview_4_date.setText(scheduleModel.getCreatedAt());
             }
         }
     }
 
+    private String splitBeforeSemicolon(String str) {
+        String[] summaryArr = str.split(";");
+        if (summaryArr.length > 0) {
+            return summaryArr[0];
+        }
+        return str;
+    }
 
     //NETWORK
     private void uploadFile(Uri uri) {
@@ -508,8 +515,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });//network
     }
 
-    private void getKeywords(){
-        Log.e("getKeyword","called");
+    private void getKeywords() {
+        Log.e("getKeyword", "called");
         RequestParams params = new RequestParams();
         Network.get(this, "/keywords", params, new JsonHttpResponseHandler() {
             @Override
@@ -528,7 +535,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         tagArrayList.add(tag);
                         tag.layoutColor = Color.parseColor("#D8FCED");
                         tag.tagTextColor = Color.BLACK;
-                        Log.e("keyword",tag.toString());
+                        Log.e("keyword", tag.toString());
                     }
                     added_tag.addTags(tagArrayList);
 
@@ -546,15 +553,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void uploadKeyword(String word){
+    private void uploadKeyword(String word) {
         RequestParams params = new RequestParams();
-        params.put("keyword",word);
+        params.put("keyword", word);
         Network.post(this, "/keywords", params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 try {
-                    Log.e("keyword upload","succress");
+                    Log.e("keyword upload", "succress");
 
                     getKeywords();
                 } catch (Exception e) {
@@ -570,6 +577,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });//network
 
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
