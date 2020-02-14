@@ -1,6 +1,7 @@
 
 # 김서기
-https://user-images.githubusercontent.com/37135317/74507850-f1b69f00-4f40-11ea-9781-eef2f5d497b6.png
+![로고](https://user-images.githubusercontent.com/37135317/74507850-f1b69f00-4f40-11ea-9781-eef2f5d497b6.png)
+
 ### 사용한 라이브러리
 - network moodule : loopj android-async-http library
 ```
@@ -37,7 +38,8 @@ public class Network {
 
 
 ### ScreenShot
-
+![image1](https://user-images.githubusercontent.com/37135317/74507938-32aeb380-4f41-11ea-93cc-335ede1a5f16.png)
+![image2](https://user-images.githubusercontent.com/37135317/74507962-40fccf80-4f41-11ea-86c8-d54238d171d3.png)
 ### Features
  - Analyze audio file and return script 
  - Analyze script file and shows you keyword and information(appointment, reservation) about script.
