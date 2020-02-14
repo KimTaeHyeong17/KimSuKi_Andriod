@@ -25,7 +25,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".Activity.MainActivity">
+        <activity
+            android:name=".Activity.MainActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,7 +37,9 @@
 
         <activity android:name=".Activity.URLMediaPlayerActivity"></activity>
 
-        <receiver android:name=".Receiver.MyReceiver" android:exported="true">
+        <receiver
+            android:name=".Receiver.MyReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE"></action>
             </intent-filter>

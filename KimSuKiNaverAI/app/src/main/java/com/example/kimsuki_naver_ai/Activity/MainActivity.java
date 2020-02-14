@@ -8,30 +8,35 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cunoraz.tagview.Tag;
+import com.cunoraz.tagview.TagView;
 import com.example.kimsuki_naver_ai.Adapter.Adapter;
 import com.example.kimsuki_naver_ai.Adapter.TodoAdapter;
 import com.example.kimsuki_naver_ai.FileChooser;
-import com.example.kimsuki_naver_ai.Model.AudioDetailModel;
 import com.example.kimsuki_naver_ai.Model.AudioModel;
+import com.example.kimsuki_naver_ai.Model.KeywordModel;
 import com.example.kimsuki_naver_ai.Model.ScheduleModel;
 import com.example.kimsuki_naver_ai.Network.Network;
 import com.example.kimsuki_naver_ai.R;
-import com.example.kimsuki_naver_ai.Service.MyService;
-import com.example.kimsuki_naver_ai.Useful;
 import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -45,6 +50,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,6 +59,10 @@ import cz.msebera.android.httpclient.Header;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    private EditText ed_new_tag;
+    private TagView added_tag;
+    private ArrayList<Tag> tagArrayList = new ArrayList<>();
+    private Button btn_add_keyword;
     private Button btn_important_record, btn_today_record, btn_all_record, btn_refresh;
     private LinearLayout layout_home, layout_settings, layout_todo;
     private LinearLayout btn_finder, btn_home, btn_setting, btn_todo;
@@ -78,10 +88,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         requestPermission();
         tapbarController(1);
         getSchedule();
+        getKeywords();
+
     }
 
     //UI
     private void bindUI() {
+        ed_new_tag = findViewById(R.id.ed_new_tag);
+
+        added_tag = findViewById(R.id.added_tag);
+        btn_add_keyword = findViewById(R.id.btn_add_keyword);
+        btn_add_keyword.setOnClickListener(this);
+
         cardview_1_title = findViewById(R.id.cardview_1_title);
         cardview_1_content = findViewById(R.id.cardview_1_content);
         cardview_1_date = findViewById(R.id.cardview_1_date);
@@ -178,7 +196,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //FUNCTIONS
     private void requestPermission() {
-
         AndPermission.with(this)
                 .runtime()
                 .permission(Permission.READ_EXTERNAL_STORAGE)
@@ -215,6 +232,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         AndPermission.with(this)
                 .runtime()
                 .permission(Permission.RECORD_AUDIO)
+                .onGranted(permissions -> {
+                    // Storage permission are allowed.
+                })
+                .onDenied(permissions -> {
+                    // Storage permission are not allowed.
+                })
+                .start();
+
+        AndPermission.with(this)
+                .runtime()
+                .permission(Permission.CALL_PHONE)
                 .onGranted(permissions -> {
                     // Storage permission are allowed.
                 })
@@ -284,6 +312,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 layout_home.setVisibility(View.GONE);
                 layout_todo.setVisibility(View.GONE);
                 layout_settings.setVisibility(View.VISIBLE);
+                getKeywords();
 
                 break;
         }
@@ -385,13 +414,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
     //NETWORK
     private void uploadFile(Uri uri) {
         RequestParams params = new RequestParams();
         File file = new File(FileChooser.getPath(this, uri));
         params.put("file_path", uri.toString());
         params.put("phone", getFileName(uri));
-        params.put("createdAt", "2020.2.11 10:11"); //2020.2.11 10:11
+        params.put("createdAt", "2020.2.14 10:11"); //2020.2.11 10:11
         Log.e("phonenumber", getFileName(uri));
         try {
             params.put("voicefile", file);
@@ -462,6 +492,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         ScheduleModel scheduleModel = gson.fromJson(jsonstr, ScheduleModel.class);
                         scheduleModelArrayList.add(scheduleModel);
                     }
+
                     todoAdapter.notifyDataSetChanged();
                     populateCardView();
                 } catch (Exception e) {
@@ -477,7 +508,68 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });//network
     }
 
+    private void getKeywords(){
+        Log.e("getKeyword","called");
+        RequestParams params = new RequestParams();
+        Network.get(this, "/keywords", params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+                    tagArrayList.clear();
+                    Gson gson = new Gson();
+                    JSONArray value = response;
+                    Log.e("value", response.toString());
+                    for (int i = 0; i < value.length(); i++) {
+                        String jsonstr = value.get(i).toString();
+                        KeywordModel keywordModel = gson.fromJson(jsonstr, KeywordModel.class);
 
+                        Tag tag = new Tag(keywordModel.getName());
+                        tagArrayList.add(tag);
+                        tag.layoutColor = Color.parseColor("#D8FCED");
+                        tag.tagTextColor = Color.BLACK;
+                        Log.e("keyword",tag.toString());
+                    }
+                    added_tag.addTags(tagArrayList);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.d("Failed: ", "" + statusCode);
+                Log.d("Error : ", "" + throwable);
+            }
+        });//network
+
+    }
+
+    private void uploadKeyword(String word){
+        RequestParams params = new RequestParams();
+        params.put("keyword",word);
+        Network.post(this, "/keywords", params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+                    Log.e("keyword upload","succress");
+
+                    getKeywords();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.d("Failed: ", "" + statusCode);
+                Log.d("Error : ", "" + throwable);
+            }
+        });//network
+
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
@@ -504,7 +596,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_finder:
                 getAudioFile();
                 break;
-
             case R.id.btn_record:
 //                if (isRecording) {
 //                    // 서비스 종료하기
@@ -524,10 +615,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                    intent1.putExtra("number", "fromButton");
 //                    startService(intent1); // 서비스 시작
 //                    isRecording = true;
-//                }
-
-                Intent intent = new Intent(Intent.ACTION_CALL);
-                startActivity(intent);
+//
+                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                callIntent.setData(Uri.parse("tel:" + ""));
+                startActivity(callIntent);
                 break;
 
             case R.id.btn_home:
@@ -551,7 +642,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_refresh:
                 Toast.makeText(MainActivity.this, "새로고침", Toast.LENGTH_SHORT).show();
                 getVoiceList(false, false);
+                tapbarController(1);
                 getSchedule();
+                getKeywords();
+            case R.id.btn_add_keyword:
+                //태그
+                uploadKeyword(ed_new_tag.getText().toString());
+                break;
             default:
 
                 break;

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -90,7 +91,8 @@
                     android:layout_height="37dp"
                     android:layout_marginTop="15dp">
 
-                    <TextView
+                    <EditText
+                        android:id="@+id/ed_new_tag"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="16dp"
@@ -99,17 +101,19 @@
                         android:background="@drawable/round_corner"
                         android:gravity="center_vertical"
                         android:hint="단어 입력..."
+                        android:maxLength="15"
                         android:paddingLeft="10dp" />
 
                     <Button
-                        android:textSize="14sp"
+                        android:id="@+id/btn_add_keyword"
                         android:layout_width="77dp"
                         android:layout_height="match_parent"
                         android:layout_marginRight="16dp"
                         android:background="@drawable/round_corner"
                         android:backgroundTint="#000000"
                         android:text="+ 추가"
-                        android:textColor="#ffffff" />
+                        android:textColor="#ffffff"
+                        android:textSize="14sp" />
 
 
                 </LinearLayout>
@@ -122,49 +126,17 @@
                     android:layout_marginBottom="10dp"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <com.cunoraz.tagview.TagView xmlns:tagview="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/added_tag"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/round_corner_background"
-                        android:backgroundTint="#F5CAC7"
-                        android:gravity="center"
-                        android:paddingHorizontal="10dp"
-                        android:text="에약"
-                        android:textColor="#000000" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/round_corner_background"
-                        android:backgroundTint="#F5CAC7"
-                        android:gravity="center"
-                        android:paddingHorizontal="10dp"
-                        android:text="에약"
-                        android:textColor="#000000" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/round_corner_background"
-                        android:backgroundTint="#F5CAC7"
-                        android:gravity="center"
-                        android:paddingHorizontal="10dp"
-                        android:text="에약"
-                        android:textColor="#000000" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/round_corner_background"
-                        android:backgroundTint="#F5CAC7"
-                        android:gravity="center"
-                        android:paddingHorizontal="10dp"
-                        android:text="에약"
-                        android:textColor="#000000" />
+                        android:layout_margin="10dp"
+                        tagview:lineMargin="5dp"
+                        tagview:tagMargin="5dp"
+                        tagview:textPaddingBottom="5dp"
+                        tagview:textPaddingLeft="8dp"
+                        tagview:textPaddingRight="8dp"
+                        tagview:textPaddingTop="5dp" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -276,7 +248,6 @@
                         android:layout_weight="1" />
 
                     <Switch
-
                         android:layout_width="60dp"
                         android:layout_height="match_parent"
                         android:layout_gravity="right"
@@ -314,6 +285,11 @@
 
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#EEF1F1" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -329,6 +305,11 @@
 
 
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#EEF1F1" />
 
             <LinearLayout
                 android:layout_width="match_parent"

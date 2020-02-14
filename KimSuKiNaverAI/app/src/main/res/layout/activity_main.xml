@@ -115,6 +115,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="김윤호"
+                                    android:textColor="#000000"
                                     android:textStyle="bold" />
 
                                 <TextView
@@ -122,7 +123,8 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="0dp"
                                     android:layout_weight="1"
-                                    android:text="금요일 전체회의 8시" />
+                                    android:text="금요일 전체회의 8시"
+                                    android:textSize="10sp" />
 
                                 <TextView
                                     android:id="@+id/cardview_1_date"
@@ -173,6 +175,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="김윤호"
+                                    android:textColor="#000000"
                                     android:textStyle="bold" />
 
                                 <TextView
@@ -180,7 +183,8 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="0dp"
                                     android:layout_weight="1"
-                                    android:text="금요일 전체회의 8시" />
+                                    android:text="금요일 전체회의 8시"
+                                    android:textSize="10sp" />
 
                                 <TextView
                                     android:id="@+id/cardview_2_date"
@@ -222,15 +226,18 @@
 
                             <LinearLayout
                                 android:layout_width="match_parent"
+
                                 android:layout_height="match_parent"
                                 android:gravity="center_vertical"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:textColor="#000000">
 
                                 <TextView
                                     android:id="@+id/cardview_3_title"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="김윤호"
+                                    android:textColor="#000000"
                                     android:textStyle="bold" />
 
                                 <TextView
@@ -238,7 +245,8 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="0dp"
                                     android:layout_weight="1"
-                                    android:text="금요일 전체회의 8시" />
+                                    android:text="금요일 전체회의 8시"
+                                    android:textSize="10sp" />
 
                                 <TextView
                                     android:id="@+id/cardview_3_date"
@@ -289,6 +297,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="김윤호"
+                                    android:textColor="#000000"
                                     android:textStyle="bold" />
 
                                 <TextView
@@ -296,7 +305,8 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="0dp"
                                     android:layout_weight="1"
-                                    android:text="금요일 전체회의 8시" />
+                                    android:text="금요일 전체회의 8시"
+                                    android:textSize="10sp" />
 
                                 <TextView
                                     android:id="@+id/cardview_4_date"
