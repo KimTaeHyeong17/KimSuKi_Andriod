@@ -1,5 +1,6 @@
 
-# 안드로이드
+# 김서기
+https://user-images.githubusercontent.com/37135317/74507850-f1b69f00-4f40-11ea-9781-eef2f5d497b6.png
 ### 사용한 라이브러리
 - network moodule : loopj android-async-http library
 ```
