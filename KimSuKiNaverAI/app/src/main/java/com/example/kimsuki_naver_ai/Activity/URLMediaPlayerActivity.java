@@ -145,9 +145,10 @@ public class URLMediaPlayerActivity extends Activity implements View.OnClickList
 
         btn_backward = findViewById(R.id.btn_backward);
         btn_pause = findViewById(R.id.btn_pause);
-        btn_pause.setVisibility(View.GONE);
 
         btn_play = findViewById(R.id.btn_play);
+        btn_play.setVisibility(View.GONE);
+
         btn_forward = findViewById(R.id.btn_forward);
         btn_back = findViewById(R.id.btn_back);
 

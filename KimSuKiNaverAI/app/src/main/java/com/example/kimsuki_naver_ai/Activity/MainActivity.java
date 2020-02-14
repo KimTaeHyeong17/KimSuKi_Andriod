@@ -356,8 +356,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 cardview_2.setVisibility(View.GONE);
                 cardview_3.setVisibility(View.GONE);
                 cardview_4.setVisibility(View.GONE);
+
                 cardview_1_title.setText(scheduleModel.getPhoneNumber());
-                cardview_1_content.setText(scheduleModel.getSch_d() + scheduleModel.getSch_t() + scheduleModel.getPhoneNumber());
+                cardview_1_content.setText(splitBeforeSemicolon(scheduleModel.getSch_d()) + splitBeforeSemicolon(scheduleModel.getSch_t()) + splitBeforeSemicolon(scheduleModel.getPhoneNumber()));
                 cardview_1_date.setText(scheduleModel.getCreatedAt());
 
             } else if (i == 1) {
@@ -365,12 +366,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 cardview_2.setVisibility(View.VISIBLE);
                 cardview_3.setVisibility(View.GONE);
                 cardview_4.setVisibility(View.GONE);
-                cardview_1_title.setText(scheduleModel.getPhoneNumber());
-                cardview_1_content.setText(scheduleModel.getSch_d() + scheduleModel.getSch_t() + scheduleModel.getPhoneNumber());
-                cardview_1_date.setText(scheduleModel.getCreatedAt());
+
 
                 cardview_2_title.setText(scheduleModel.getPhoneNumber());
-                cardview_2_content.setText(scheduleModel.getSch_d() + scheduleModel.getSch_t() + scheduleModel.getPhoneNumber());
+                cardview_2_content.setText(splitBeforeSemicolon(scheduleModel.getSch_d()) + splitBeforeSemicolon(scheduleModel.getSch_t()) + splitBeforeSemicolon(scheduleModel.getPhoneNumber()));
                 cardview_2_date.setText(scheduleModel.getCreatedAt());
 
             } else if (i == 2) {
@@ -378,16 +377,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 cardview_2.setVisibility(View.VISIBLE);
                 cardview_3.setVisibility(View.VISIBLE);
                 cardview_4.setVisibility(View.GONE);
-                cardview_1_title.setText(scheduleModel.getPhoneNumber());
-                cardview_1_content.setText(scheduleModel.getSch_d() + scheduleModel.getSch_t() + scheduleModel.getPhoneNumber());
-                cardview_1_date.setText(scheduleModel.getCreatedAt());
 
-                cardview_2_title.setText(scheduleModel.getPhoneNumber());
-                cardview_2_content.setText(scheduleModel.getSch_d() + scheduleModel.getSch_t() + scheduleModel.getPhoneNumber());
-                cardview_2_date.setText(scheduleModel.getCreatedAt());
 
                 cardview_3_title.setText(scheduleModel.getPhoneNumber());
-                cardview_3_content.setText(scheduleModel.getSch_d() + scheduleModel.getSch_t() + scheduleModel.getPhoneNumber());
+                cardview_3_content.setText(splitBeforeSemicolon(scheduleModel.getSch_d()) + splitBeforeSemicolon(scheduleModel.getSch_t()) + splitBeforeSemicolon(scheduleModel.getPhoneNumber()));
                 cardview_3_date.setText(scheduleModel.getCreatedAt());
 
             } else if (i == 3) {
@@ -399,13 +392,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 cardview_1_content.setText(splitBeforeSemicolon(scheduleModel.getSch_d()) + splitBeforeSemicolon(scheduleModel.getSch_t()) + splitBeforeSemicolon(scheduleModel.getPhoneNumber()));
                 cardview_1_date.setText(scheduleModel.getCreatedAt());
 
-                cardview_2_title.setText(scheduleModel.getPhoneNumber());
-                cardview_2_content.setText(splitBeforeSemicolon(scheduleModel.getSch_d()) + splitBeforeSemicolon(scheduleModel.getSch_t()) + splitBeforeSemicolon(scheduleModel.getPhoneNumber()));
-                cardview_2_date.setText(scheduleModel.getCreatedAt());
-
-                cardview_3_title.setText(scheduleModel.getPhoneNumber());
-                cardview_3_content.setText(splitBeforeSemicolon(scheduleModel.getSch_d()) + splitBeforeSemicolon(scheduleModel.getSch_t()) + splitBeforeSemicolon(scheduleModel.getPhoneNumber()));
-                cardview_3_date.setText(scheduleModel.getCreatedAt());
 
                 cardview_4_title.setText(scheduleModel.getPhoneNumber());
                 cardview_4_content.setText(splitBeforeSemicolon(scheduleModel.getSch_d()) + splitBeforeSemicolon(scheduleModel.getSch_t()) + splitBeforeSemicolon(scheduleModel.getPhoneNumber()));

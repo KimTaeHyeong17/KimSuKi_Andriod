@@ -61,7 +61,7 @@
                 android:layout_width="53dp"
                 android:layout_height="53dp"
                 android:layout_gravity="center"
-                android:background="@drawable/ic_mic" />
+                android:background="@drawable/ic_plus" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
